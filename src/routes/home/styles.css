@@ -1,0 +1,221 @@
+.hero-introduction {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: 24px;
+  padding-block: 40px;
+}
+.hero-introduction h1 {
+  font-size: var(--text-title);
+  line-height: 1.28;
+  letter-spacing: -0.015em;
+}
+.hero-introduction p {
+  max-width: 48ch;
+  color: var(--color-ink-secondary);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+.hero-introduction .button-primary {
+  justify-self: start;
+}
+.hero-photograph {
+  position: relative;
+}
+.hero-photograph img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2170 / 725;
+  object-fit: cover;
+}
+.hero-photograph > figcaption {
+  position: absolute;
+  right: var(--page-gutter);
+  bottom: 8px;
+  padding: 2px 8px;
+  background: var(--color-canvas);
+  color: var(--color-ink-muted);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+.collection {
+  padding-block: 48px 64px;
+}
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 32px;
+  text-align: center;
+}
+.section-heading::before,
+.section-heading::after {
+  content: '';
+  height: 1px;
+  flex: 1;
+  background: var(--color-accent);
+}
+.section-heading h2 {
+  flex: 0 1 auto;
+}
+.product-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+}
+.product-card {
+  min-width: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-canvas);
+}
+.product-image-frame {
+  overflow: hidden;
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  background: var(--color-surface);
+}
+.product-image-frame img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 498 / 217;
+  object-fit: contain;
+  transition: transform var(--duration-image) var(--ease-organic);
+}
+.product-card figcaption {
+  padding: 20px 24px;
+  text-align: center;
+}
+.product-card h3 {
+  font-size: 1.5rem;
+  line-height: 1.4;
+}
+.product-card figcaption p {
+  margin-top: 4px;
+  color: var(--color-ink-muted);
+  font-size: 0.8125rem;
+}
+.collection-note {
+  max-width: 65ch;
+  margin: 24px auto 0;
+  font-size: 0.8125rem;
+  text-align: center;
+  color: var(--color-ink-muted);
+}
+.archive-notes {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 48px;
+  padding-bottom: 64px;
+}
+.archive-note {
+  border-top: 1px solid var(--color-border);
+  padding-top: 32px;
+}
+.archive-note h2 {
+  font-size: var(--text-subtitle);
+  line-height: 1.4;
+}
+.archive-note > p {
+  max-width: 65ch;
+  margin-top: 20px;
+  color: var(--color-ink-secondary);
+}
+.archive-note .content-status {
+  color: var(--color-ink-muted);
+  font-size: 0.875rem;
+}
+@media (min-width: 40rem) {
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 64rem) {
+  .hero-introduction {
+    grid-template-columns: 1.65fr 1.1fr auto;
+    gap: 32px;
+    padding-block: 32px;
+  }
+  .hero-introduction h1 {
+    font-size: var(--text-section);
+    white-space: nowrap;
+  }
+  .hero-introduction p {
+    padding-left: 24px;
+    border-left: 1px solid var(--color-accent);
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+  .hero-introduction .button-primary {
+    justify-self: end;
+  }
+  .hero-photograph img {
+    aspect-ratio: 1672 / 325;
+    object-position: center 48%;
+  }
+  .collection {
+    padding-block: 32px 64px;
+  }
+  .product-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+  }
+  .archive-notes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 64px;
+    padding-bottom: 96px;
+  }
+}
+@media (min-width: 80rem) {
+  .product-grid {
+    gap: 32px;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .product-card:hover .product-image-frame img {
+    transform: scale(1.025);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .product-image-frame img {
+    transform: none !important;
+  }
+}
+@media (min-width: 80rem) {
+  .hero-introduction {
+    grid-template-columns: 1.6fr 1.05fr auto;
+  }
+  .hero-introduction h1 {
+    font-size: clamp(2.125rem, 3.5vw, 4rem);
+  }
+  .hero-introduction p {
+    font-size: 1.125rem;
+  }
+  .hero-introduction .button-primary {
+    min-height: 56px;
+    font-size: 1.125rem;
+  }
+  .product-card h3 {
+    font-size: var(--text-subtitle);
+  }
+  .product-card figcaption p {
+    font-size: 1rem;
+  }
+}
+@media (min-width: 80rem) {
+  .hero-introduction {
+    padding-block: 24px;
+  }
+  .section-heading {
+    margin-bottom: 24px;
+  }
+  .section-heading h2 {
+    font-size: clamp(1.75rem, 2.5vw, 3rem);
+  }
+  .product-card figcaption {
+    padding-block: 16px;
+  }
+}
+
+picture {
+  display: block;
+}

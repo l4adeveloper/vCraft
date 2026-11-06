@@ -11,3 +11,26 @@ dist-ssr
 .vinxi
 __unconfig*
 todos.json
+
+# Local design tooling output and review sessions
+/.impeccable/build/
+/.impeccable/review/
+/.impeccable/questions/
+/.impeccable/live/sessions/
+/.impeccable/config.local.json
+
+# Unused composition alternatives (keep the approved B reference)
+/.impeccable/mocks/home-option-a.png
+/.impeccable/mocks/home-option-c.png
+
+# Image-generation prompt and metadata sidecars
+/.impeccable/mocks/*.png.json
+/assets/plates/*.png.json
+/assets/plates/*.webp.json
+
+# Generated caches and verification output
+.vite/
+coverage/
+__pycache__/
+.pytest_cache/
+*.tsbuildinfo

@@ -26,6 +26,11 @@ export default [
       '.vinxi/**',
       '.wrangler/**',
       'dist-ssr/**',
+      // Installed agent tools are not application source.
+      '.agent/**',
+      '.agents/**',
+      '.cursor/**',
+      '.gemini/**',
     ],
   },
 ]

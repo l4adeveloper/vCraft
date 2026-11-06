@@ -1,0 +1,405 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-06T14:56:46.365841+00:00",
+  "title": "Design System: vCraft",
+  "extensions": {
+    "colorMeta": {
+      "canvas": {
+        "role": "neutral",
+        "displayName": "Rice Paper",
+        "canonical": "#faf8f5",
+        "tonalRamp": [
+          "oklch(15% 0.0016 78.30)",
+          "oklch(26% 0.0029 78.30)",
+          "oklch(37% 0.0038 78.30)",
+          "oklch(49% 0.0045 78.30)",
+          "oklch(61% 0.0045 78.30)",
+          "oklch(73% 0.0038 78.30)",
+          "oklch(85% 0.0025 78.30)",
+          "oklch(95% 0.0009 78.30)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Unglazed Linen",
+        "canonical": "#f3efea",
+        "tonalRamp": [
+          "oklch(15% 0.0028 73.74)",
+          "oklch(26% 0.0052 73.74)",
+          "oklch(37% 0.0068 73.74)",
+          "oklch(49% 0.0080 73.74)",
+          "oklch(61% 0.0080 73.74)",
+          "oklch(73% 0.0068 73.74)",
+          "oklch(85% 0.0044 73.74)",
+          "oklch(95% 0.0016 73.74)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Wood-Ash Charcoal",
+        "canonical": "#242120",
+        "tonalRamp": [
+          "oklch(15% 0.0017 39.39)",
+          "oklch(26% 0.0032 39.39)",
+          "oklch(37% 0.0042 39.39)",
+          "oklch(49% 0.0049 39.39)",
+          "oklch(61% 0.0049 39.39)",
+          "oklch(73% 0.0042 39.39)",
+          "oklch(85% 0.0027 39.39)",
+          "oklch(95% 0.0010 39.39)"
+        ]
+      },
+      "ink-secondary": {
+        "role": "neutral",
+        "displayName": "Soft Soot",
+        "canonical": "#3a3533",
+        "tonalRamp": [
+          "oklch(15% 0.0028 43.19)",
+          "oklch(26% 0.0051 43.19)",
+          "oklch(37% 0.0067 43.19)",
+          "oklch(49% 0.0079 43.19)",
+          "oklch(61% 0.0079 43.19)",
+          "oklch(73% 0.0067 43.19)",
+          "oklch(85% 0.0044 43.19)",
+          "oklch(95% 0.0016 43.19)"
+        ]
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Warm Ash",
+        "canonical": "#655d57",
+        "tonalRamp": [
+          "oklch(15% 0.0049 59.33)",
+          "oklch(26% 0.0091 59.33)",
+          "oklch(37% 0.0119 59.33)",
+          "oklch(49% 0.0140 59.33)",
+          "oklch(61% 0.0140 59.33)",
+          "oklch(73% 0.0119 59.33)",
+          "oklch(85% 0.0077 59.33)",
+          "oklch(95% 0.0028 59.33)"
+        ]
+      },
+      "primary": {
+        "role": "primary",
+        "displayName": "Men Lam — Cobalt Glaze",
+        "canonical": "#264364",
+        "tonalRamp": [
+          "oklch(15% 0.0234 252.77)",
+          "oklch(26% 0.0435 252.77)",
+          "oklch(37% 0.0569 252.77)",
+          "oklch(49% 0.0669 252.77)",
+          "oklch(61% 0.0669 252.77)",
+          "oklch(73% 0.0569 252.77)",
+          "oklch(85% 0.0368 252.77)",
+          "oklch(95% 0.0134 252.77)"
+        ]
+      },
+      "primary-hover": {
+        "role": "primary",
+        "displayName": "Deep Cobalt",
+        "canonical": "#1d3557",
+        "tonalRamp": [
+          "oklch(15% 0.0237 257.27)",
+          "oklch(26% 0.0441 257.27)",
+          "oklch(37% 0.0576 257.27)",
+          "oklch(49% 0.0678 257.27)",
+          "oklch(61% 0.0678 257.27)",
+          "oklch(73% 0.0576 257.27)",
+          "oklch(85% 0.0373 257.27)",
+          "oklch(95% 0.0136 257.27)"
+        ]
+      },
+      "primary-active": {
+        "role": "primary",
+        "displayName": "Dark Cobalt",
+        "canonical": "#172b46",
+        "tonalRamp": [
+          "oklch(15% 0.0197 256.33)",
+          "oklch(26% 0.0366 256.33)",
+          "oklch(37% 0.0478 256.33)",
+          "oklch(49% 0.0563 256.33)",
+          "oklch(61% 0.0563 256.33)",
+          "oklch(73% 0.0478 256.33)",
+          "oklch(85% 0.0310 256.33)",
+          "oklch(95% 0.0113 256.33)"
+        ]
+      },
+      "on-primary": {
+        "role": "primary",
+        "displayName": "Paper on Cobalt",
+        "canonical": "#faf8f5",
+        "tonalRamp": [
+          "oklch(15% 0.0016 78.30)",
+          "oklch(26% 0.0029 78.30)",
+          "oklch(37% 0.0038 78.30)",
+          "oklch(49% 0.0045 78.30)",
+          "oklch(61% 0.0045 78.30)",
+          "oklch(73% 0.0038 78.30)",
+          "oklch(85% 0.0025 78.30)",
+          "oklch(95% 0.0009 78.30)"
+        ]
+      },
+      "primary-soft": {
+        "role": "primary",
+        "displayName": "Pale Cobalt Wash",
+        "canonical": "#edf1f5",
+        "tonalRamp": [
+          "oklch(15% 0.0024 247.90)",
+          "oklch(26% 0.0045 247.90)",
+          "oklch(37% 0.0058 247.90)",
+          "oklch(49% 0.0069 247.90)",
+          "oklch(61% 0.0069 247.90)",
+          "oklch(73% 0.0058 247.90)",
+          "oklch(85% 0.0038 247.90)",
+          "oklch(95% 0.0014 247.90)"
+        ]
+      },
+      "accent": {
+        "role": "secondary",
+        "displayName": "Đất Nung — Fired Clay",
+        "canonical": "#b45339",
+        "tonalRamp": [
+          "oklch(15% 0.0464 36.00)",
+          "oklch(26% 0.0862 36.00)",
+          "oklch(37% 0.1127 36.00)",
+          "oklch(49% 0.1326 36.00)",
+          "oklch(61% 0.1326 36.00)",
+          "oklch(73% 0.1127 36.00)",
+          "oklch(85% 0.0730 36.00)",
+          "oklch(95% 0.0265 36.00)"
+        ]
+      },
+      "accent-ink": {
+        "role": "secondary",
+        "displayName": "Deep Fired Clay",
+        "canonical": "#8c442d",
+        "tonalRamp": [
+          "oklch(15% 0.0365 38.32)",
+          "oklch(26% 0.0678 38.32)",
+          "oklch(37% 0.0887 38.32)",
+          "oklch(49% 0.1043 38.32)",
+          "oklch(61% 0.1043 38.32)",
+          "oklch(73% 0.0887 38.32)",
+          "oklch(85% 0.0574 38.32)",
+          "oklch(95% 0.0209 38.32)"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Warm Outline",
+        "canonical": "#e6dfd7",
+        "tonalRamp": [
+          "oklch(15% 0.0046 71.32)",
+          "oklch(26% 0.0086 71.32)",
+          "oklch(37% 0.0113 71.32)",
+          "oklch(49% 0.0132 71.32)",
+          "oklch(61% 0.0132 71.32)",
+          "oklch(73% 0.0113 71.32)",
+          "oklch(85% 0.0073 71.32)",
+          "oklch(95% 0.0026 71.32)"
+        ]
+      },
+      "border-strong": {
+        "role": "neutral",
+        "displayName": "Strong Ash",
+        "canonical": "#8c8076",
+        "tonalRamp": [
+          "oklch(15% 0.0073 62.25)",
+          "oklch(26% 0.0136 62.25)",
+          "oklch(37% 0.0177 62.25)",
+          "oklch(49% 0.0209 62.25)",
+          "oklch(61% 0.0209 62.25)",
+          "oklch(73% 0.0177 62.25)",
+          "oklch(85% 0.0115 62.25)",
+          "oklch(95% 0.0042 62.25)"
+        ]
+      },
+      "selection": {
+        "role": "primary",
+        "displayName": "Cobalt Selection Wash",
+        "canonical": "#dce5ee",
+        "tonalRamp": [
+          "oklch(15% 0.0055 248.00)",
+          "oklch(26% 0.0102 248.00)",
+          "oklch(37% 0.0133 248.00)",
+          "oklch(49% 0.0156 248.00)",
+          "oklch(61% 0.0156 248.00)",
+          "oklch(73% 0.0133 248.00)",
+          "oklch(85% 0.0086 248.00)",
+          "oklch(95% 0.0031 248.00)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Narrow-screen hero and not-found title; responsive hero overrides are documented in DESIGN.md."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headings, with the wide collection override documented in DESIGN.md."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Archive headings and wide product names."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Reading paragraphs."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Primary action text."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Illustration labels and small supporting copy."
+      }
+    },
+    "shadows": [
+      {
+        "name": "focus-paper-gap",
+        "value": "0 0 0 3px var(--color-canvas)",
+        "purpose": "Primary-action focus separation, not elevation."
+      }
+    ],
+    "motion": [
+      {
+        "name": "duration-feedback",
+        "value": "120ms",
+        "purpose": "Primary-action background-color feedback."
+      },
+      {
+        "name": "duration-image",
+        "value": "400ms",
+        "purpose": "Fine-pointer image zoom to 1.025."
+      },
+      {
+        "name": "ease-standard",
+        "value": "cubic-bezier(0.2, 0, 0, 1)",
+        "purpose": "Button feedback."
+      },
+      {
+        "name": "ease-organic",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Product-image transform."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "0ms",
+        "purpose": "Both durations become zero and product-image transforms are removed."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "two-product-columns",
+        "value": "40rem"
+      },
+      {
+        "name": "wide-navigation",
+        "value": "48rem"
+      },
+      {
+        "name": "wide-exhibition",
+        "value": "64rem"
+      },
+      {
+        "name": "large-exhibition",
+        "value": "80rem"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary action",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Collection anchor with the implemented arrow, color states, and focus treatment.",
+      "html": "<a class=\"ds-button-primary\" href=\"#collection\">Khám phá bộ sưu tập<svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"M4 12h15m-6-6 6 6-6 6\"/></svg></a>",
+      "css": ".ds-button-primary{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:48px;border:1px solid transparent;padding:10px 20px;border-radius:var(--radius-control);background:var(--color-primary);color:var(--color-on-primary);font-family:var(--font-body);font-size:.875rem;line-height:1.6;font-weight:500;text-align:center;text-decoration:none;transition:background-color var(--duration-feedback) var(--ease-standard)}.ds-button-primary:hover{background:var(--color-primary-hover)}.ds-button-primary:active{background:var(--color-primary-active)}.ds-button-primary:focus-visible{outline:2px solid var(--color-primary);outline-offset:3px;box-shadow:0 0 0 3px var(--color-canvas)}.ds-button-primary svg{flex-shrink:0}@media(prefers-reduced-motion:reduce){.ds-button-primary{transition:none}}"
+    },
+    {
+      "name": "Exhibition navigation",
+      "kind": "nav",
+      "refersTo": "navigation-link",
+      "description": "Wide navigation excerpt; mobile disclosure behavior remains in the React root component.",
+      "html": "<nav class=\"ds-navigation\" aria-label=\"Điều hướng chính\"><a href=\"/home#collection\">Bộ sưu tập</a><a href=\"/home#story\">Câu chuyện</a><a href=\"/home#origin\">Nguồn gốc</a></nav>",
+      "css": ".ds-navigation{display:flex;align-items:center;gap:40px;border-left:1px solid var(--color-accent);padding-left:40px}.ds-navigation a{display:inline-flex;align-items:center;min-height:44px;color:var(--color-ink);font-family:var(--font-body);font-size:.875rem;font-weight:500;line-height:1.75;text-decoration:none}.ds-navigation a:hover{color:var(--color-primary);text-decoration:underline}.ds-navigation a:focus-visible{outline:2px solid var(--color-primary);outline-offset:3px;}@media(min-width:80rem){.ds-navigation a{font-size:1.125rem}}"
+    },
+    {
+      "name": "Sample product caption",
+      "kind": "card",
+      "refersTo": "product-card",
+      "description": "Minimal noninteractive card excerpt showing the actual caption; source image and responsive gallery remain in the route.",
+      "html": "<figure class=\"ds-product-card\"><figcaption><h3>Bình men lam</h3><p>Hình ảnh minh họa</p></figcaption></figure>",
+      "css": ".ds-product-card{margin:0;min-width:0;border:1px solid var(--color-border);border-radius:var(--radius-card);background:var(--color-canvas);color:var(--color-ink)}.ds-product-card figcaption{padding:20px 24px;text-align:center}.ds-product-card h3{margin:0;font-family:var(--font-display);font-size:1.5rem;font-weight:400;line-height:1.4}.ds-product-card p{margin:4px 0 0;color:var(--color-ink-muted);font-family:var(--font-body);font-size:.8125rem;line-height:1.75}@media(min-width:80rem){.ds-product-card figcaption{padding-block:16px}.ds-product-card h3{font-size:var(--text-subtitle)}.ds-product-card p{font-size:1rem}}"
+    },
+    {
+      "name": "Archive content status",
+      "kind": "custom",
+      "refersTo": "archive-note",
+      "description": "Plain editorial note excerpt, explicitly distinguishing future stories from authenticated content.",
+      "html": "<div class=\"ds-archive-note\"><h2>Đằng sau một dáng gốm</h2><p class=\"ds-content-status\">Câu chuyện nghệ nhân sẽ được giới thiệu khi có nội dung xác thực.</p></div>",
+      "css": ".ds-archive-note{border-top:1px solid var(--color-border);padding-top:32px;color:var(--color-ink-secondary)}.ds-archive-note h2{margin:0;color:var(--color-ink);font-family:var(--font-display);font-size:var(--text-subtitle);font-weight:400;line-height:1.4}.ds-archive-note p{max-width:65ch;margin:20px 0 0;font-family:var(--font-body);line-height:1.75}.ds-archive-note .ds-content-status{color:var(--color-ink-muted);font-size:.875rem}"
+    },
+    {
+      "name": "Exhibition footer",
+      "kind": "custom",
+      "description": "Wordmark, exhibition description, and real back-to-top link.",
+      "html": "<footer class=\"ds-footer\"><a class=\"ds-footer-wordmark\" href=\"/home\">vCraft</a><p>Một không gian dành cho gốm và người làm nghề.</p><a href=\"#main-content\">Về đầu trang</a></footer>",
+      "css": ".ds-footer{display:flex;align-items:center;flex-wrap:wrap;gap:24px;padding-block:32px;border-top:1px solid var(--color-border);font-family:var(--font-body);line-height:1.75}.ds-footer-wordmark{color:var(--color-ink);font-family:var(--font-display);font-size:1.75rem;line-height:1.3;letter-spacing:-.02em;text-decoration:none}.ds-footer p{margin:0}.ds-footer p,.ds-footer>a:last-child{font-size:.8125rem;color:var(--color-ink-muted)}.ds-footer>a:last-child{margin-left:auto;min-height:44px;display:inline-flex;align-items:center;text-underline-offset:.25em}.ds-footer a:focus-visible{outline:2px solid var(--color-primary);outline-offset:3px;}@media(max-width:47.999rem){.ds-footer{align-items:flex-start;gap:12px 24px}.ds-footer p{flex-basis:100%}.ds-footer>a:last-child{margin-left:0}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Living Pottery Archive",
+    "overview": "A living archive brings the object, its maker, and its making into view together. vCraft feels unhurried, tactile, and grounded in people. Rice-paper surfaces, literary headings, and natural-light pottery imagery carry the approved warm editorial world; dependable navigation and controls frame the objects.\n\nThe first implementation follows the user-selected wide exhibition composition B: an introductory band, panoramic still life, and three curated sample pieces. The present content is explicitly illustrative. Maker stories and provenance remain future content requiring evidence; PRODUCT.md governs product facts.",
+    "keyCharacteristics": [
+      "Measured and mindful: “Từ tốn” guides visual pacing without delaying interaction.",
+      "Material warmth: rice paper, cobalt glaze, fired clay, and wood ash.",
+      "Literary clarity: Lora headings and Be Vietnam Pro interface text.",
+      "Honest evidence: illustrative pieces are labelled and missing provenance stays explicit.",
+      "Editorial breathing room: spacious imagery with coherent source and mobile reading order."
+    ],
+    "rules": [
+      {
+        "name": "The Material Evidence Rule",
+        "body": "Let pottery imagery express material character; keep typography, alignment, navigation, and controls dependable.",
+        "section": "overview"
+      },
+      {
+        "name": "The Glaze and Ground Rule",
+        "body": "Let paper surfaces and pottery imagery dominate; use cobalt to establish action hierarchy and clay for restrained warm details.",
+        "section": "colors"
+      },
+      {
+        "name": "The Complete Voice Rule",
+        "body": "Preserve Vietnamese accents and full names; allow headings and body copy to wrap without clipping diacritics.",
+        "section": "typography"
+      },
+      {
+        "name": "The Reading Order Rule",
+        "body": "Preserve logical source order, keyboard order, and narrow-screen flow when extending editorial layouts.",
+        "section": "layout"
+      },
+      {
+        "name": "The Quiet Surface Rule",
+        "body": "Keep exhibition cards flat; do not add card lift, hard shadows, glass, gradients, or glow to this world.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do preserve rice-paper grounds, cobalt actions, clay hairlines, and the Lora/Be Vietnam Pro pairing.",
+      "Do label illustrative imagery and sample pieces; keep missing stories and provenance explicit.",
+      "Do preserve Vietnamese diacritics, visible focus, usable targets, and reduced-motion behavior.",
+      "Do retain complete product silhouettes with contained gallery imagery.",
+      "Do keep object, maker, and provenance meaningfully connected when authentic records become available."
+    ],
+    "donts": [
+      "Don't invent maker biographies, quotations, prices, certifications, origin, or cooking-safety claims.",
+      "Don't turn static sample figures into apparent product links without real destinations.",
+      "Don't add nested card shells, floating product shadows, fluorescent accents, or decorative heritage motifs.",
+      "Don't hide essential information behind hover or add motion that withholds initial content.",
+      "Don't treat this as-built record or development screenshots as a completed comp review receipt."
+    ]
+  }
+}
