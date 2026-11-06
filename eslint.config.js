@@ -15,6 +15,17 @@ export default [
     },
   },
   {
-    ignores: ['eslint.config.js', 'prettier.config.js'],
+    ignores: [
+      'eslint.config.js',
+      'prettier.config.js',
+      // Generated routes and framework build/cache output.
+      'src/routeTree.gen.ts',
+      '.tanstack/**',
+      '.output/**',
+      '.nitro/**',
+      '.vinxi/**',
+      '.wrangler/**',
+      'dist-ssr/**',
+    ],
   },
 ]
