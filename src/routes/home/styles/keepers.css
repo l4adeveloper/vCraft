@@ -1,0 +1,218 @@
+/* ---------- Người giữ lửa: thẻ nghệ nhân ---------- */
+.keepers {
+  padding-block: var(--section);
+  background: var(--paper-deep);
+}
+.keepers__head {
+  display: grid;
+  gap: 20px var(--gap);
+  align-items: end;
+  margin-bottom: clamp(28px, 4vw, 56px);
+}
+.keepers__hint {
+  max-width: 26rem;
+  color: var(--ink-soft);
+}
+
+/* Điện thoại: một hàng vuốt ngang, mỗi thẻ gần kín màn hình */
+.keepers__list {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(78vw, 320px);
+  gap: var(--gap);
+  margin-inline: calc(var(--gutter) * -1);
+  padding-inline: var(--gutter);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  scrollbar-width: none;
+}
+.keeper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  cursor: pointer;
+  scroll-snap-align: start;
+  transition: box-shadow var(--dur-swap) var(--ease-out);
+}
+.keeper:hover,
+.keeper:focus-within {
+  box-shadow: 0 22px 44px -28px rgba(48, 41, 34, 0.55);
+}
+.keeper__visual {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--sand);
+  color: var(--paper);
+}
+.keeper__visual .photo {
+  transition: transform 1.1s var(--ease-out);
+}
+.keeper:hover .keeper__visual .photo,
+.keeper:focus-within .keeper__visual .photo {
+  transform: scale(1.06);
+}
+/* Tối dần về chân ảnh để tên đọc rõ */
+.keeper__visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(26, 20, 15, 0.82),
+    rgba(26, 20, 15, 0) 58%
+  );
+}
+.keeper__no,
+.keeper__status,
+.keeper__title,
+.keeper__cue {
+  position: absolute;
+  z-index: 1;
+}
+.keeper__no {
+  top: 14px;
+  left: 16px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.125rem;
+  text-shadow: 0 1px 10px rgba(26, 20, 15, 0.6);
+}
+.keeper__status {
+  top: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--paper);
+}
+.keeper__title {
+  inset: auto 16px 14px;
+  font-size: 0.8125rem;
+}
+.keeper__name {
+  font-size: clamp(1.75rem, 1.4rem + 1vw, 2.25rem);
+  line-height: 1.15;
+}
+.keeper__name button {
+  font: inherit;
+  text-align: left;
+}
+.keeper__name button:focus-visible {
+  outline: none;
+}
+.keeper:has(.keeper__name button:focus-visible) {
+  outline: 2px solid var(--lam);
+  outline-offset: 3px;
+}
+.keeper__cue {
+  right: 14px;
+  bottom: 14px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+  opacity: 0;
+  transform: translate(-8px, 8px);
+  transition:
+    opacity var(--dur-ui) var(--ease-out),
+    transform var(--dur-swap) var(--ease-out);
+}
+.keeper:hover .keeper__cue,
+.keeper:focus-within .keeper__cue {
+  opacity: 1;
+  transform: none;
+}
+.keeper__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 16px 16px;
+}
+.keeper__role {
+  font-size: 0.8125rem;
+  color: var(--ink-soft);
+}
+.keeper__quote {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.0625rem;
+  line-height: 1.5;
+}
+.keeper__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.keeper__open {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--lam);
+}
+.keeper__open .icon {
+  transition: transform var(--dur-ui) var(--ease-out);
+}
+.keeper:hover .keeper__open .icon {
+  transform: translateX(4px);
+}
+.keeper__visit {
+  position: relative;
+  z-index: 2;
+  min-height: 44px;
+  padding-inline: 14px;
+  border: 1px solid var(--ink-soft);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  transition:
+    background-color var(--dur-ui) var(--ease-out),
+    color var(--dur-ui) var(--ease-out),
+    border-color var(--dur-ui) var(--ease-out);
+}
+.keeper__visit:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+.keepers__note {
+  margin-top: 20px;
+  font-size: 0.8125rem;
+  color: var(--ink-soft);
+}
+
+@media (min-width: 48rem) {
+  .keepers__list {
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-inline: 0;
+    padding-inline: 0;
+    overflow: visible;
+  }
+  .keeper__visual {
+    aspect-ratio: 5 / 4;
+  }
+}
+@media (min-width: 64rem) {
+  .keepers__head {
+    grid-template-columns: 1fr auto;
+  }
+  .keepers__list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .keeper__visual {
+    aspect-ratio: 4 / 5;
+  }
+}

@@ -1,0 +1,207 @@
+/* ---------- Triển lãm ---------- */
+.exhibit {
+  padding-block: var(--section);
+}
+.exhibit__head {
+  display: grid;
+  gap: 24px var(--gap);
+  align-items: end;
+}
+.exhibit__intro {
+  max-width: 26rem;
+  color: var(--ink-soft);
+}
+.filters {
+  display: flex;
+  gap: 4px 28px;
+  margin-block: 40px 40px;
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.filter {
+  position: relative;
+  flex: none;
+  min-height: 52px;
+  padding-block: 12px;
+  font-size: 0.9375rem;
+  color: var(--ink-soft);
+  transition: color var(--dur-ui) var(--ease-out);
+}
+.filter sup {
+  margin-left: 6px;
+  font-size: 0.6875rem;
+}
+.filter:hover,
+.filter.is-active {
+  color: var(--ink);
+}
+.filter:focus-visible {
+  outline-offset: -2px;
+}
+.filter__mark {
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 2px;
+  background: var(--clay);
+}
+
+/* Lưới ô vuông đều nhau; ô tâm điểm chiếm 2 × 2 */
+.pieces {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px var(--gap);
+}
+.piece {
+  min-width: 0;
+}
+.piece--feature {
+  grid-column: span 2;
+}
+.piece__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.piece__frame {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--sand);
+}
+.piece__frame .mask {
+  position: absolute;
+  inset: 0;
+}
+.piece__frame .photo {
+  transition: transform 0.9s var(--ease-out);
+}
+.piece__hover {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity var(--dur-swap) var(--ease-out) !important;
+}
+.piece__cue {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--paper);
+  font-size: 0.75rem;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity var(--dur-ui) var(--ease-out),
+    transform var(--dur-ui) var(--ease-out);
+}
+.piece__card:is(:hover, :focus-within) .piece__cue {
+  opacity: 1;
+  transform: none;
+}
+.piece__card:is(:hover, :focus-within) .mask .photo {
+  transform: scale(1.05);
+}
+.piece__card--swap:is(:hover, :focus-within) .piece__hover {
+  opacity: 1;
+}
+.piece__meta {
+  display: grid;
+  gap: 2px;
+  align-content: start;
+  min-height: 7.5rem;
+  padding-top: 12px;
+}
+.piece__no {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.875rem;
+  color: var(--clay);
+}
+.piece__name {
+  font-size: 1.1875rem;
+  line-height: 1.3;
+}
+.piece--feature .piece__name {
+  font-size: var(--text-title);
+}
+.piece__open {
+  font: inherit;
+}
+.piece__open::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+.piece__open:focus-visible {
+  outline: none;
+}
+.piece__open:focus-visible::after {
+  outline: 2px solid var(--lam);
+  outline-offset: 4px;
+}
+.piece__sub,
+.piece__price {
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+.piece__sub {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+.piece__price {
+  margin-top: 2px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.piece__price span {
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+.exhibit__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 32px;
+  margin-top: 40px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.exhibit__note {
+  font-size: 0.8125rem;
+  color: var(--ink-soft);
+}
+
+@media (min-width: 48rem) {
+  .pieces {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 40px var(--gap);
+  }
+  .piece--feature {
+    grid-row: span 2;
+  }
+  .piece--feature .piece__frame {
+    flex: 1;
+    aspect-ratio: auto;
+    min-height: 0;
+  }
+}
+@media (min-width: 64rem) {
+  .exhibit__head {
+    grid-template-columns: 1fr auto;
+  }
+  .pieces {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

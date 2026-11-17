@@ -1,4 +1,3 @@
-import { useRef, useState } from 'react'
 import {
   HeadContent,
   Link,
@@ -8,20 +7,31 @@ import {
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
+import { MotionConfig } from 'motion/react'
 import type { ReactNode } from 'react'
+import { SiteFooter } from '#/components/layout/SiteFooter'
+import { SiteHeader } from '#/components/layout/SiteHeader'
+import { OverlayHost } from '#/components/overlays/OverlayHost'
+import { MOTION_BOOT_SCRIPT, useReducedMotion } from '#/lib/motionPref'
+import { ExploreProvider } from '#/state/explore'
 import stylesheet from '../styles.css?url'
+
+/** Không có JavaScript thì nội dung chờ hiệu ứng cuộn vẫn phải đọc được. */
+const NO_SCRIPT_CSS =
+  '[data-reveal]{opacity:1!important;transform:none!important;clip-path:none!important}'
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'vCraft — Một không gian dành cho gốm' },
+      { title: 'vCraft — Triển lãm số làng gốm Bát Tràng' },
       {
         name: 'description',
         content:
-          'Khám phá những dáng gốm, câu chuyện người làm nghề và hành trình từ đất đến tác phẩm.',
+          'Từ đất làng, thành câu chuyện. Khám phá tác phẩm gốm, người làm nghề, hành trình của từng mẻ gốm và bản đồ xưởng ở Bát Tràng.',
       },
+      { name: 'theme-color', content: '#F4EFE6' },
     ],
     links: [{ rel: 'stylesheet', href: stylesheet }],
   }),
@@ -32,9 +42,13 @@ export const Route = createRootRoute({
 
 function RootDocument({ children }: { children: ReactNode }) {
   return (
-    <html lang="vi">
+    <html lang="vi" suppressHydrationWarning>
       <head>
         <HeadContent />
+        <script dangerouslySetInnerHTML={{ __html: MOTION_BOOT_SCRIPT }} />
+        <noscript>
+          <style>{NO_SCRIPT_CSS}</style>
+        </noscript>
       </head>
       <body>
         {children}
@@ -45,101 +59,37 @@ function RootDocument({ children }: { children: ReactNode }) {
 }
 
 function RootComponent() {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const menuButton = useRef<HTMLButtonElement>(null)
-  const closeMenu = () => setMenuOpen(false)
-
+  const reduced = useReducedMotion()
   return (
-    <>
-      <a className="skip-link" href="#main-content">
-        Đến nội dung chính
-      </a>
-      <header
-        className="site-header"
-        onKeyDown={(event) => {
-          if (event.key === 'Escape' && menuOpen) {
-            closeMenu()
-            menuButton.current?.focus()
-          }
-        }}
-      >
-        <div className="site-header-inner page-shell">
-          <Link
-            className="wordmark"
-            to="/home"
-            onClick={closeMenu}
-            aria-label="vCraft — Trang chủ"
-          >
-            vCraft
-          </Link>
-          <button
-            className="menu-toggle"
-            ref={menuButton}
-            type="button"
-            aria-expanded={menuOpen}
-            aria-controls="site-navigation"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            {menuOpen ? 'Đóng' : 'Menu'}
-            <svg
-              viewBox="0 0 24 24"
-              width="20"
-              height="20"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              aria-hidden="true"
-            >
-              {menuOpen ? (
-                <path d="m6 6 12 12M6 18 18 6" />
-              ) : (
-                <path d="M4 7h16M4 12h16M4 17h16" />
-              )}
-            </svg>
-          </button>
-          <nav
-            id="site-navigation"
-            className={`site-navigation${menuOpen ? ' is-open' : ''}`}
-            aria-label="Điều hướng chính"
-          >
-            <Link to="/home" hash="collection" onClick={closeMenu}>
-              Bộ sưu tập
-            </Link>
-            <Link to="/home" hash="story" onClick={closeMenu}>
-              Câu chuyện
-            </Link>
-            <Link to="/home" hash="origin" onClick={closeMenu}>
-              Nguồn gốc
-            </Link>
-          </nav>
-        </div>
-      </header>
-      <main id="main-content" tabIndex={-1}>
-        <Outlet />
-      </main>
-      <footer className="site-footer page-shell">
-        <Link to="/home" className="footer-wordmark">
-          vCraft
-        </Link>
-        <p>Một không gian dành cho gốm và người làm nghề.</p>
-        <a href="#main-content">Về đầu trang</a>
-      </footer>
+    <MotionConfig reducedMotion={reduced ? 'always' : 'never'}>
+      <ExploreProvider>
+        <a className="skip-link" href="#main-content">
+          Đến nội dung chính
+        </a>
+        <SiteHeader />
+        <main id="main-content" tabIndex={-1}>
+          <Outlet />
+        </main>
+        <SiteFooter />
+        <OverlayHost />
+      </ExploreProvider>
       <TanStackDevtools
         config={{ position: 'bottom-right' }}
         plugins={[
           { name: 'TanStack Router', render: <TanStackRouterDevtoolsPanel /> },
         ]}
       />
-    </>
+    </MotionConfig>
   )
 }
 
 function NotFound() {
   return (
-    <div className="not-found page-shell">
+    <div className="not-found shell">
+      <p className="eyebrow">Lỗi 404</p>
       <h1>Không tìm thấy trang</h1>
       <p>Trang bạn tìm có thể đã được chuyển hoặc không còn tồn tại.</p>
-      <Link className="button-primary" to="/home">
+      <Link className="btn btn--primary" to="/home">
         Về trang chủ
       </Link>
     </div>

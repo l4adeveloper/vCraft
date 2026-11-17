@@ -1,0 +1,249 @@
+/* ---------- Bản đồ làng nghề ---------- */
+.village {
+  padding-block: var(--section);
+}
+.village__head {
+  display: grid;
+  gap: 28px var(--gap);
+  align-items: end;
+  margin-bottom: 40px;
+}
+.toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 8px 18px 8px 14px;
+  border: 1px solid var(--ink-soft);
+  border-radius: 999px;
+  font-size: 0.875rem;
+  transition:
+    background-color var(--dur-ui) var(--ease-out),
+    color var(--dur-ui) var(--ease-out),
+    border-color var(--dur-ui) var(--ease-out);
+}
+.toggle i {
+  width: 12px;
+  height: 12px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  transition: background-color var(--dur-ui) var(--ease-out);
+}
+.toggle.is-on {
+  background: var(--lam);
+  border-color: var(--lam);
+  color: var(--paper);
+}
+.toggle.is-on i {
+  background: currentColor;
+}
+.village__note {
+  max-width: 30rem;
+  margin-top: 14px;
+  font-size: 0.8125rem;
+  color: var(--ink-soft);
+}
+.village__grid {
+  display: grid;
+  gap: 28px var(--gap);
+}
+.village__map {
+  position: relative;
+  isolation: isolate;
+}
+.village__canvas {
+  height: clamp(360px, 62vh, 620px);
+  background: var(--sand);
+}
+.village__state,
+.village__tiles {
+  position: absolute;
+  z-index: 1001;
+  font-size: 0.875rem;
+}
+.village__state {
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 16px;
+  padding: 24px;
+  background: var(--sand);
+  text-align: center;
+  pointer-events: none;
+}
+.village__state[role='alert'] {
+  pointer-events: auto;
+}
+.village__state .wheel {
+  width: 72px;
+}
+.village__tiles {
+  top: 12px;
+  right: 12px;
+  max-width: 16rem;
+  padding: 8px 12px;
+  background: var(--paper);
+}
+.place-card {
+  position: relative;
+  z-index: 1001;
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 16px;
+  margin-top: 12px;
+  padding: 16px 48px 16px 16px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+}
+.place-card__photo {
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--sand);
+}
+.place-card__body {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  font-size: 0.8125rem;
+  color: var(--ink-soft);
+}
+.place-card h3 {
+  font-size: 1.375rem;
+  line-height: 1.25;
+  color: var(--ink);
+}
+.place-card li::before {
+  content: '– ';
+}
+.place-card .link-arrow {
+  justify-self: start;
+  color: var(--ink);
+}
+.place-card__close {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+}
+.village__count {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.8125rem;
+  color: var(--ink-soft);
+}
+.place {
+  display: grid;
+  grid-template-columns: 2.25rem 1fr;
+  gap: 6px 0;
+  width: 100%;
+  padding: 18px 12px 18px 0;
+  border-bottom: 1px solid var(--line);
+  transition:
+    background-color var(--dur-ui) var(--ease-out),
+    padding var(--dur-swap) var(--ease-out);
+}
+.place:hover {
+  background: var(--paper-deep);
+}
+.place.is-selected {
+  padding-left: 14px;
+  background: var(--paper-deep);
+  box-shadow: inset 3px 0 0 var(--clay);
+}
+.place__no {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--clay);
+}
+.place__main {
+  display: grid;
+}
+.place__name {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  line-height: 1.3;
+}
+.place__line {
+  font-size: 0.8125rem;
+  color: var(--ink-soft);
+}
+.place__tags {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin-top: 4px;
+}
+@media (min-width: 64rem) {
+  .village__head {
+    grid-template-columns: 1fr auto;
+  }
+  .village__grid {
+    grid-template-columns: 7fr 5fr;
+    align-items: start;
+  }
+  .place-card {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    width: min(440px, calc(100% - 32px));
+    margin: 0;
+  }
+}
+/* Leaflet: hòa nền bản đồ vào bảng màu và vẽ pin riêng */
+.village .leaflet-container {
+  font-family: var(--font-body);
+  background: var(--sand);
+}
+.village .leaflet-tile-pane {
+  filter: sepia(0.3) saturate(0.7) contrast(0.95);
+}
+.village .leaflet-bar a {
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--ink);
+}
+.pin {
+  display: grid !important;
+  place-items: start center;
+}
+.pin span {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--paper);
+  border-radius: 50% 50% 50% 4px;
+  background: var(--lam);
+  color: var(--paper);
+  font: 500 0.875rem/1 var(--font-body);
+  rotate: -45deg;
+  transform-origin: center;
+  transition:
+    background-color var(--dur-ui) var(--ease-out),
+    scale var(--dur-swap) var(--ease-out);
+}
+.pin b {
+  font-weight: 500;
+  rotate: 45deg;
+}
+.pin:hover span,
+.pin.is-selected span {
+  background: var(--clay);
+}
+.pin.is-selected span {
+  scale: 1.2;
+}
+.pin:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+}

@@ -1,0 +1,205 @@
+/* ---------- Câu chuyện làng nghề: bốn tấm chất liệu ---------- */
+.story {
+  padding-top: var(--section);
+}
+.story__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px var(--gap);
+  align-items: end;
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+.materials {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 580px;
+}
+.material {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--ink);
+  color: var(--paper);
+  transition: flex-grow 0.8s var(--ease-out);
+}
+.material.is-active {
+  flex-grow: 5;
+}
+.material__photo {
+  position: absolute;
+  inset: 0;
+  transform: scale(1.08);
+  transition: transform 1.4s var(--ease-out);
+}
+.material.is-active .material__photo {
+  transform: none;
+}
+/* Tấm chưa chọn phủ men lam; tấm đang chọn chỉ tối phần chân để đọc chữ */
+.material::before,
+.material::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  transition: opacity var(--dur-section) var(--ease-out);
+}
+.material::before {
+  background: var(--lam-deep);
+  opacity: 0.5;
+}
+.material::after {
+  background: linear-gradient(
+    to top,
+    rgba(26, 20, 15, 0.86),
+    rgba(26, 20, 15, 0) 64%
+  );
+  opacity: 0;
+}
+.material.is-active::before {
+  opacity: 0;
+}
+.material.is-active::after {
+  opacity: 1;
+}
+.material:not(.is-active):hover::before {
+  opacity: 0.34;
+}
+.material__content {
+  z-index: 2;
+  width: 100%;
+  padding: 16px 20px;
+}
+.material__head {
+  font-size: 1rem;
+}
+.material__head button {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  width: 100%;
+  color: inherit;
+}
+.material__head button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+.material__head button:focus-visible {
+  outline: none;
+}
+.material:has(button:focus-visible) {
+  outline: 2px solid var(--clay);
+  outline-offset: 3px;
+}
+.material__no {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  opacity: 0.8;
+}
+.material__word {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.material.is-active .material__word {
+  font-size: clamp(2.25rem, 1.6rem + 2.6vw, 4rem);
+  font-style: italic;
+  line-height: 1.15;
+  font-variation-settings:
+    'SOFT' 100,
+    'WONK' 1;
+}
+.material__body {
+  width: min(30rem, calc(100vw - var(--gutter) * 2 - 40px));
+  margin-top: 10px;
+}
+.material__body p {
+  line-height: 1.65;
+}
+.material__body .material__caption {
+  margin-top: 8px;
+  font-size: 0.75rem;
+  opacity: 0.75;
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+html.motion {
+  .material__body {
+    animation: rise var(--dur-section) var(--ease-out) 0.25s both;
+  }
+}
+
+.story__trace {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 32px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-soft);
+}
+.story__trace p {
+  max-width: 38rem;
+  font-size: 0.9375rem;
+}
+.story__trace .link-arrow {
+  color: var(--ink);
+}
+
+/* Dải ảnh toàn cảnh */
+.story__band {
+  margin-top: var(--section);
+}
+.story__band-frame {
+  width: 100%;
+  height: max(240px, 33.4vw);
+  overflow: hidden;
+  background: var(--sand);
+}
+.story__band-move {
+  width: 100%;
+  height: 100%;
+  scale: 1.16;
+}
+.story__band figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 12px;
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+}
+html:not(.motion) {
+  .story__band-move {
+    scale: 1;
+  }
+}
+
+@media (min-width: 48rem) {
+  .materials {
+    flex-direction: row;
+    gap: 8px;
+    height: clamp(420px, 62vh, 580px);
+  }
+  .material__content {
+    padding: 24px;
+  }
+}
+@media (min-width: 64rem) {
+  .story__head {
+    grid-template-columns: 7fr 5fr;
+  }
+}

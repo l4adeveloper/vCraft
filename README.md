@@ -27,7 +27,11 @@ The build produces browser assets in `dist/client` and a server bundle in `dist/
 
 - `src/router.tsx` creates a router for each request.
 - `src/routes/__root.tsx` defines the HTML document, metadata, stylesheet, and shared layout.
-- `src/routes/index.tsx` defines the home page.
+- `src/routes/index.tsx` redirects to `/home`; `src/routes/home/` is the public home page.
+- `src/components/home/` holds the home page sections, `src/components/overlays/` the drawer contents (product, artisan, batch, quote form), `src/components/ui/` shared pieces.
+- `src/data/` is the demo dataset (workshops, artisans, products, batches) linked by ID; `src/lib/storage.ts` keeps quote requests in localStorage until a backend exists.
+- `src/lib/motion.ts` and the tokens at the top of `src/styles.css` are the single source for motion, color and type.
+- `assets/photos/` is the image registry: any `.webp` dropped there is picked up by key (see `src/data/images.ts`).
 - `src/routeTree.gen.ts` is generated automatically by the Start plugin.
 
 Start supplies the default client hydration and server rendering entry points. File routes live in `src/routes`; the Start plugin handles route generation and code splitting.

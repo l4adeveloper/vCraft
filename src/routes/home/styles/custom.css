@@ -1,0 +1,131 @@
+/* ---------- Đặt một câu chuyện riêng ---------- */
+.custom {
+  position: relative;
+  padding-block: var(--section);
+  background: var(--clay);
+  color: var(--paper);
+  overflow: clip;
+}
+.custom .eyebrow {
+  color: var(--sand);
+}
+.custom .display em {
+  color: var(--sand);
+}
+.custom .lead {
+  margin-top: 24px;
+  color: inherit;
+}
+.custom__wheel {
+  position: absolute;
+  top: -20%;
+  right: -18%;
+  width: min(70vw, 760px);
+  max-width: none;
+  opacity: 0.3;
+}
+.custom__grid {
+  position: relative;
+  display: grid;
+  gap: 48px var(--gap);
+}
+.custom__needs {
+  display: grid;
+  gap: 0;
+  margin-top: 40px;
+  border-top: 1px solid var(--line-light);
+}
+.custom__needs li {
+  display: grid;
+  gap: 4px 24px;
+  padding-block: 16px;
+  border-bottom: 1px solid var(--line-light);
+}
+.custom__needs h3 {
+  font-size: 1.25rem;
+}
+.custom__needs p {
+  font-size: 0.9375rem;
+}
+.custom__brief {
+  align-self: end;
+  padding: clamp(24px, 4vw, 44px);
+  background: var(--paper);
+  color: var(--ink);
+}
+.custom__brief .eyebrow {
+  color: var(--clay-deep);
+}
+.custom__example {
+  margin-block: 16px 28px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--text-title);
+  line-height: 1.35;
+}
+.custom__facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding-block: 16px;
+  border-block: 1px solid var(--line);
+}
+.custom__facts dt {
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+}
+.custom__facts dd {
+  font-weight: 500;
+}
+.custom__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+.custom__saved {
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  font-size: 0.8125rem;
+}
+.custom__saved-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.custom__saved-head h3 {
+  font-size: 1.125rem;
+}
+.custom__saved li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  padding-block: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.custom__saved-code {
+  font-weight: 600;
+}
+.custom__saved-note {
+  margin-top: 10px;
+  color: var(--ink-soft);
+}
+@media (min-width: 48rem) {
+  .custom__needs li {
+    grid-template-columns: 14rem 1fr;
+    align-items: baseline;
+  }
+}
+@media (min-width: 64rem) {
+  .custom__grid {
+    grid-template-columns: repeat(12, 1fr);
+  }
+  .custom__copy {
+    grid-column: 1 / span 6;
+  }
+  .custom__brief {
+    grid-column: 8 / span 5;
+  }
+}
