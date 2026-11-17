@@ -10,22 +10,10 @@ import {
   writeDraft,
 } from '#/lib/storage'
 import { useExplore } from '#/state/explore'
-import type { Product, QuoteRequest } from '#/data'
+import { BUDGETS, PRODUCT_TYPES, isoDate, validate } from '#/lib/quote'
+import type { Errors, Field, Values } from '#/lib/quote'
+import type { Product, QuoteReceipt } from '#/data'
 
-interface Values {
-  productType: string
-  quantity: string
-  deadline: string
-  budget: string
-  customization: string
-  name: string
-  organization: string
-  email: string
-  phone: string
-}
-
-type Field = keyof Values
-type Errors = Partial<Record<Field, string>>
 type Phase = 'editing' | 'sending' | 'failed' | 'done'
 
 const FIELD_ORDER: Array<Field> = [
@@ -38,23 +26,6 @@ const FIELD_ORDER: Array<Field> = [
   'organization',
   'email',
   'phone',
-]
-
-const PRODUCT_TYPES = [
-  'Cốc, ly',
-  'Bộ ấm chén',
-  'Bát đĩa',
-  'Bình, lọ trang trí',
-  'Bộ quà tặng',
-  'Loại khác',
-]
-
-const BUDGETS = [
-  'Dưới 50 triệu đồng',
-  '50 – 200 triệu đồng',
-  '200 – 500 triệu đồng',
-  'Trên 500 triệu đồng',
-  'Chưa xác định',
 ]
 
 const EMPTY: Values = {
@@ -73,14 +44,6 @@ const CATEGORY_TO_TYPE: Record<Product['category'], string> = {
   'gia-dung': 'Bát đĩa',
   'trang-tri': 'Bình, lọ trang trí',
   'bo-tra': 'Bộ ấm chén',
-}
-
-function isoDate(offsetDays: number): string {
-  const date = new Date()
-  date.setDate(date.getDate() + offsetDays)
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  return `${date.getFullYear()}-${month}-${day}`
 }
 
 function initialValues(
@@ -114,45 +77,6 @@ function initialValues(
   return base
 }
 
-function validate(values: Values): Errors {
-  const errors: Errors = {}
-  if (!values.productType) errors.productType = 'Chọn loại sản phẩm bạn cần.'
-
-  const quantity = Number(values.quantity)
-  if (!values.quantity.trim()) {
-    errors.quantity = 'Nhập số lượng cần đặt.'
-  } else if (!Number.isInteger(quantity) || quantity < 1) {
-    errors.quantity = 'Số lượng phải là số nguyên từ 1 trở lên.'
-  } else if (quantity > 1_000_000) {
-    errors.quantity = 'Số lượng tối đa cho một yêu cầu là 1.000.000.'
-  }
-
-  if (!values.deadline) {
-    errors.deadline = 'Chọn ngày bạn cần nhận hàng.'
-  } else if (values.deadline <= isoDate(0)) {
-    errors.deadline = 'Hạn giao phải sau ngày hôm nay.'
-  }
-
-  if (values.customization.length > 1000) {
-    errors.customization = 'Mô tả tối đa 1.000 ký tự.'
-  }
-  if (values.name.trim().length < 2) {
-    errors.name = 'Nhập họ tên người liên hệ.'
-  }
-  if (!values.email.trim()) {
-    errors.email = 'Nhập email để nhận báo giá.'
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email.trim())) {
-    errors.email = 'Email chưa đúng định dạng, ví dụ ten@congty.vn.'
-  }
-  const phone = values.phone.replace(/[\s.-]/g, '')
-  if (!phone) {
-    errors.phone = 'Nhập số điện thoại liên hệ.'
-  } else if (!/^(?:\+84|0)\d{9}$/.test(phone)) {
-    errors.phone = 'Số điện thoại gồm 10 chữ số, bắt đầu bằng 0 hoặc +84.'
-  }
-  return errors
-}
-
 interface QuoteSheetProps {
   productId?: string
   preset?: 'example'
@@ -168,7 +92,8 @@ export function QuoteSheet({ productId, preset }: QuoteSheetProps) {
   )
   const [errors, setErrors] = useState<Errors>({})
   const [phase, setPhase] = useState<Phase>('editing')
-  const [result, setResult] = useState<QuoteRequest | null>(null)
+  const [result, setResult] = useState<QuoteReceipt | null>(null)
+  const submissionId = useRef<string | null>(null)
   const doneHeading = useRef<HTMLHeadingElement>(null)
 
   // Giữ bản nháp để lỡ đóng drawer cũng không mất nội dung đã nhập.
@@ -217,7 +142,8 @@ export function QuoteSheet({ productId, preset }: QuoteSheetProps) {
     }
     setPhase('sending')
     try {
-      const saved = await saveQuoteRequest({
+      submissionId.current ??= crypto.randomUUID()
+      const saved = await saveQuoteRequest(submissionId.current, {
         productType: values.productType,
         quantity: Number(values.quantity),
         deadline: values.deadline,
@@ -229,6 +155,7 @@ export function QuoteSheet({ productId, preset }: QuoteSheetProps) {
         phone: values.phone.trim(),
         productId: product?.id,
       })
+      submissionId.current = null
       clearDraft()
       setResult(saved)
       setPhase('done')
@@ -265,7 +192,7 @@ export function QuoteSheet({ productId, preset }: QuoteSheetProps) {
           Đã ghi nhận yêu cầu
         </h2>
         <p className="sheet__summary">
-          Mã yêu cầu <strong>{result.code}</strong>
+          Mã yêu cầu <strong className="quote-done__code">{result.code}</strong>
         </p>
         <dl className="facts">
           <div>
@@ -278,24 +205,10 @@ export function QuoteSheet({ productId, preset }: QuoteSheetProps) {
             <dt>Hạn giao</dt>
             <dd>{formatDate(result.deadline)}</dd>
           </div>
-          <div>
-            <dt>Ngân sách</dt>
-            <dd>{result.budget}</dd>
-          </div>
-          <div>
-            <dt>Liên hệ</dt>
-            <dd>
-              {result.name}
-              {result.organization ? ` · ${result.organization}` : ''}
-              <br />
-              {result.email} · {result.phone}
-            </dd>
-          </div>
         </dl>
         <p className="notice">
-          <strong>Chế độ demo.</strong> Yêu cầu được lưu trên trình duyệt này và
-          chưa gửi tới Ban quản lý làng nghề. Khi kết nối hệ thống, Ban quản lý
-          sẽ phản hồi qua email hoặc điện thoại bạn đã để lại.
+          Ban quản lý làng nghề đã nhận được yêu cầu và có thể phản hồi qua
+          email hoặc điện thoại bạn đã để lại.
         </p>
         <div className="quote-done__actions">
           <button type="button" className="btn btn--primary" onClick={close}>
@@ -335,8 +248,7 @@ export function QuoteSheet({ productId, preset }: QuoteSheetProps) {
       ) : null}
       {phase === 'failed' ? (
         <p className="form-alert" role="alert">
-          Không lưu được yêu cầu trên trình duyệt này. Nội dung bạn nhập vẫn còn
-          nguyên, hãy thử gửi lại.
+          Chưa gửi được yêu cầu. Nội dung bạn nhập vẫn còn, hãy thử lại.
         </p>
       ) : null}
 

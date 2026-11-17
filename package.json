@@ -6,10 +6,13 @@
     "#/*": "./src/*"
   },
   "scripts": {
-    "dev": "vite dev --port 3000",
+    "admin:create": "node --env-file-if-exists=.env scripts/create-admin.mjs",
+    "db:migrate": "node --env-file-if-exists=.env scripts/migrate-db.mjs",
+    "db:import-sqlite": "node --env-file-if-exists=.env scripts/import-sqlite.mjs",
+    "dev": "node --env-file-if-exists=.env node_modules/vite/bin/vite.js dev --port 3000",
     "generate-routes": "tsr generate",
     "build": "vite build",
-    "preview": "vite preview",
+    "preview": "node --env-file-if-exists=.env node_modules/vite/bin/vite.js preview",
     "lint": "eslint",
     "format": "prettier --write . && eslint --fix",
     "check": "prettier --check .",
@@ -25,6 +28,7 @@
     "@tanstack/react-start": "1.169.4",
     "leaflet": "^1.9.4",
     "motion": "^14.14.0",
+    "pg": "^8.23.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "tailwindcss": "^4.1.18"
@@ -36,6 +40,7 @@
     "@tanstack/router-plugin": "1.168.48",
     "@types/leaflet": "^1.9.22",
     "@types/node": "^22.10.2",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^6.0.1",

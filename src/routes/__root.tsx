@@ -4,6 +4,7 @@ import {
   Outlet,
   Scripts,
   createRootRoute,
+  useLocation,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
@@ -14,6 +15,7 @@ import { SiteHeader } from '#/components/layout/SiteHeader'
 import { OverlayHost } from '#/components/overlays/OverlayHost'
 import { MOTION_BOOT_SCRIPT, useReducedMotion } from '#/lib/motionPref'
 import { ExploreProvider } from '#/state/explore'
+import './admin.css'
 import stylesheet from '../styles.css?url'
 
 /** Không có JavaScript thì nội dung chờ hiệu ứng cuộn vẫn phải đọc được. */
@@ -60,18 +62,22 @@ function RootDocument({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const reduced = useReducedMotion()
+  const accountPage = useLocation({
+    select: ({ pathname }) =>
+      /^\/(account|admin|login|signup)\/?$/.test(pathname),
+  })
   return (
     <MotionConfig reducedMotion={reduced ? 'always' : 'never'}>
       <ExploreProvider>
         <a className="skip-link" href="#main-content">
           Đến nội dung chính
         </a>
-        <SiteHeader />
+        {!accountPage && <SiteHeader />}
         <main id="main-content" tabIndex={-1}>
           <Outlet />
         </main>
-        <SiteFooter />
-        <OverlayHost />
+        {!accountPage && <SiteFooter />}
+        {!accountPage && <OverlayHost />}
       </ExploreProvider>
       <TanStackDevtools
         config={{ position: 'bottom-right' }}

@@ -456,7 +456,7 @@ html.motion {
 .site-header__bar {
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: clamp(0.6rem, 2vw, 2rem);
   height: var(--header-h);
   transition: height var(--dur-swap) var(--ease-out);
 }
@@ -511,6 +511,22 @@ html.motion {
 }
 .site-header__cta {
   display: none;
+}
+.site-header__account {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.5rem, 1.4vw, 1rem);
+  font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+  white-space: nowrap;
+}
+.site-header__account a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  text-decoration: none;
+}
+.site-header__account a:hover {
+  text-decoration: underline;
 }
 .menu-toggle {
   display: inline-flex;
@@ -1053,4 +1069,8 @@ html:not(.motion) {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
   }
+}
+
+.quote-done__code {
+  overflow-wrap: anywhere;
 }

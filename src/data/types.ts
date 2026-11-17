@@ -100,12 +100,15 @@ export interface Batch {
   verification: 'demo'
 }
 
-export type QuoteStatus = 'saved-locally'
+export const QUOTE_STATUSES = {
+  new: 'Mới tiếp nhận',
+  'in-progress': 'Đang xử lý',
+  completed: 'Hoàn tất',
+} as const
 
-export interface QuoteRequest {
-  id: string
-  code: string
-  createdAt: string
+export type QuoteStatus = keyof typeof QUOTE_STATUSES
+
+export interface QuoteInput {
   productType: string
   quantity: number
   deadline: string
@@ -116,5 +119,24 @@ export interface QuoteRequest {
   email: string
   phone: string
   productId?: ProductId
+}
+
+export interface QuoteReceipt {
+  id: string
+  code: string
+  quantity: number
+  productType: string
+  deadline: string
+}
+
+export interface QuoteAllocation {
+  workshopId: WorkshopId
+  quantity: number
+}
+
+export interface AdminQuote extends QuoteInput, QuoteReceipt {
+  createdAt: string
   status: QuoteStatus
+  allocations: Array<QuoteAllocation>
+  version: number
 }

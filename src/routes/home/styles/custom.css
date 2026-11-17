@@ -107,10 +107,7 @@
 }
 .custom__saved-code {
   font-weight: 600;
-}
-.custom__saved-note {
-  margin-top: 10px;
-  color: var(--ink-soft);
+  overflow-wrap: anywhere;
 }
 @media (min-width: 48rem) {
   .custom__needs li {

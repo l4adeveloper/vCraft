@@ -82,6 +82,9 @@ export function SiteFooter() {
             © 2026 vCraft · Nội dung xưởng, nghệ nhân và sản phẩm là dữ liệu
             minh họa.
           </p>
+          <Link to="/admin" preload={false}>
+            Quản trị
+          </Link>
           <a href="#main-content">Về đầu trang ↑</a>
         </div>
       </div>

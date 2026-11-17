@@ -34,3 +34,6 @@ coverage/
 __pycache__/
 .pytest_cache/
 *.tsbuildinfo
+
+# Legacy vCraft SQLite data
+/var/

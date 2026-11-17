@@ -99,13 +99,13 @@ export function CustomOrder() {
           {requests.length > 0 ? (
             <div className="custom__saved">
               <div className="custom__saved-head">
-                <h3>Yêu cầu bạn đã gửi</h3>
+                <h3>Yêu cầu trên thiết bị này</h3>
                 <button
                   type="button"
                   className="text-button"
                   onClick={clearQuoteRequests}
                 >
-                  Xóa danh sách
+                  Xóa lịch sử trên thiết bị
                 </button>
               </div>
               <ul>
@@ -115,14 +115,15 @@ export function CustomOrder() {
                     <span>
                       {formatNumber(request.quantity)} × {request.productType}
                     </span>
-                    <span>giao trước {formatDate(request.deadline)}</span>
+                    <span>
+                      giao trước {formatDate(request.deadline)}
+                      {request.status === 'saved-locally'
+                        ? ' · Bản demo chưa gửi'
+                        : ''}
+                    </span>
                   </li>
                 ))}
               </ul>
-              <p className="custom__saved-note">
-                Bản demo: {requests.length} yêu cầu chỉ lưu trên trình duyệt
-                này, chưa gửi tới Ban quản lý.
-              </p>
             </div>
           ) : null}
         </Reveal>

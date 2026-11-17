@@ -1,0 +1,183 @@
+.account-panel {
+  width: min(100% - 2 * var(--gutter), 28rem);
+  margin: clamp(3rem, 10vh, 8rem) auto;
+  padding: clamp(1.4rem, 5vw, 2.5rem);
+  background: #fffaf2;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+}
+.account-panel h1,
+.admin-heading h1 {
+  margin: 1rem 0 0;
+  font-family: var(--font-display);
+  font-size: var(--text-title);
+  font-weight: 550;
+  line-height: 1.15;
+}
+.account-panel > p {
+  margin: 0.6rem 0 1.2rem;
+}
+.account-panel form {
+  margin-block: 1.5rem 1.25rem;
+}
+.account-panel fieldset,
+.admin-editor fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.account-panel fieldset {
+  display: grid;
+  gap: 1rem;
+}
+.account-panel .field,
+.admin-editor .field {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+}
+.admin-dashboard {
+  max-width: 74rem;
+  padding-bottom: 4rem;
+}
+.admin-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding-block: 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+.admin-toolbar__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
+.admin-heading {
+  margin-block: clamp(2rem, 6vh, 4rem) 1.4rem;
+}
+.admin-heading p {
+  margin: 0.4rem 0 0;
+  color: var(--ink-soft);
+}
+.admin-quotes {
+  display: grid;
+  gap: 0.75rem;
+}
+.admin-quote {
+  background: #fffaf2;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+}
+.admin-quote summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 1rem clamp(1rem, 3vw, 1.5rem);
+}
+.admin-quote summary::-webkit-details-marker {
+  display: none;
+}
+.admin-quote summary::before {
+  content: '+';
+  color: var(--lam);
+  font-weight: 700;
+}
+.admin-quote[open] summary::before {
+  content: '−';
+}
+.admin-quote summary > span:first-of-type {
+  flex: 1;
+  min-width: 12ch;
+}
+.admin-quote summary strong,
+.admin-quote summary span span {
+  display: block;
+}
+.admin-quote summary span span {
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}
+.admin-status {
+  padding: 0.15rem 0.6rem;
+  border-radius: 2rem;
+  background: var(--paper-deep);
+  font-size: 0.8125rem;
+}
+.admin-status--in-progress {
+  background: #e2eaf0;
+  color: var(--lam-deep);
+}
+.admin-status--completed {
+  background: #e1ebdd;
+  color: #25472d;
+}
+.admin-quote__body {
+  padding: 1.2rem clamp(1rem, 3vw, 1.5rem);
+  border-top: 1px solid var(--line);
+}
+.admin-facts,
+.admin-workshops__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: 0.9rem 1.25rem;
+}
+.admin-facts {
+  margin: 0 0 1.4rem;
+}
+.admin-facts dt {
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}
+.admin-facts dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.admin-facts__wide {
+  grid-column: 1 / -1;
+}
+.admin-editor {
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+}
+.admin-editor__status {
+  max-width: 16rem;
+}
+.admin-editor .admin-workshops {
+  margin-block: 1rem;
+}
+.admin-workshops legend {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+.admin-pages {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-block: 1rem;
+}
+
+.account-panel__details dt {
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+}
+.account-panel__details dd {
+  margin: 0 0 0.75rem;
+  overflow-wrap: anywhere;
+}
+.account-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}

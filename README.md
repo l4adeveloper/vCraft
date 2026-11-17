@@ -4,8 +4,20 @@ A React application built with TanStack Start, TanStack Router, TypeScript, Vite
 
 ## Development
 
+Use Node.js 24 or later and a PostgreSQL server. Create an empty database owned by the vCraft database user, then set `DATABASE_URL` to that user's PostgreSQL connection URL.
+
+```sql
+CREATE ROLE vcraft LOGIN PASSWORD 'replace-with-your-password';
+CREATE DATABASE vcraft OWNER vcraft;
+```
+
+Run those SQL statements from an administrator connection to PostgreSQL.
+
 ```sh
-npm install
+npm ci
+cp .env.example .env
+# Set DATABASE_URL in .env before continuing.
+npm run db:migrate
 npm run dev
 ```
 
@@ -29,12 +41,47 @@ The build produces browser assets in `dist/client` and a server bundle in `dist/
 - `src/routes/__root.tsx` defines the HTML document, metadata, stylesheet, and shared layout.
 - `src/routes/index.tsx` redirects to `/home`; `src/routes/home/` is the public home page.
 - `src/components/home/` holds the home page sections, `src/components/overlays/` the drawer contents (product, artisan, batch, quote form), `src/components/ui/` shared pieces.
-- `src/data/` is the demo dataset (workshops, artisans, products, batches) linked by ID; `src/lib/storage.ts` keeps quote requests in localStorage until a backend exists.
+- `src/data/` is the demo dataset (workshops, artisans, products, batches) linked by ID.
+- `src/routes/api/` and `src/server/` handle sign-in, sessions, and quote requests. `src/lib/storage.ts` keeps drafts and receipts on the visitor’s device.
 - `src/lib/motion.ts` and the tokens at the top of `src/styles.css` are the single source for motion, color and type.
 - `assets/photos/` is the image registry: any `.webp` dropped there is picked up by key (see `src/data/images.ts`).
 - `src/routeTree.gen.ts` is generated automatically by the Start plugin.
 
 Start supplies the default client hydration and server rendering entry points. File routes live in `src/routes`; the Start plugin handles route generation and code splitting.
+
+## Sign-in and registration
+
+Run `npm run db:migrate` when upgrading an existing installation to add visitor accounts. Existing admin accounts and sessions carry forward.
+
+`/signup` registers a visitor account and signs them in. `/login` accepts both visitor and admin accounts. Visitors go to `/account`, and admins go to `/admin`. The public navigation links to both pages.
+
+## Admin setup
+
+Create an admin from the repository root. In Bash, enter a password of at least 15 characters when prompted.
+
+```bash
+read -rs -p 'Admin password: ' VCRAFT_SETUP_PASSWORD; printf '\n'
+printf '%s' "$VCRAFT_SETUP_PASSWORD" | npm run admin:create -- admin@example.com
+unset VCRAFT_SETUP_PASSWORD
+```
+
+Start the app with `npm run dev` and open [the admin page](http://localhost:3000/admin). Run the same command with an existing email to reset its password and revoke that account’s active sessions.
+
+Visitors can submit quote requests without an account. Admins can review contact and order details, update each request’s status, and split its quantity across workshops. The available workshops come from the exhibition’s demo dataset. Old browser-only demo requests stay on their original device.
+
+### Import from SQLite
+
+If you have an existing vCraft SQLite database, stop the old app so all writes are included. After running `npm run db:migrate` against PostgreSQL, import the file:
+
+```sh
+npm run db:import-sqlite -- var/vcraft.sqlite
+```
+
+The import preserves admin password hashes, quote IDs, statuses, and workshop allocations. It can be rerun and skips emails and quote IDs already present in PostgreSQL. Admins sign in again after the move. Browser-only quote drafts and demo receipts are still stored on their original device.
+
+### Production configuration
+
+Set `DATABASE_URL` in the Node server environment and run `npm run db:migrate` with a role that can create tables in the target schema. The server uses PostgreSQL for accounts, sessions, and quote requests. Serve the app over HTTPS for production session cookies. If a reverse proxy changes the request origin seen by Node, set `VCRAFT_ORIGIN` to the public origin, such as `https://vcraft.example.com`, without a trailing slash.
 
 ## Server features
 

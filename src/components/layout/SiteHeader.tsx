@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import {
   AnimatePresence,
@@ -22,6 +22,22 @@ export function SiteHeader() {
   const { open } = useExplore()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [role, setRole] = useState<'admin' | 'customer' | null>(null)
+  useEffect(() => {
+    const controller = new AbortController()
+    fetch('/api/auth', { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) return
+        const session = (await response.json()) as {
+          role: 'admin' | 'customer' | null
+        }
+        setRole(session.role)
+      })
+      .catch(() => {
+        // Keep the public account links when session information is unavailable.
+      })
+    return () => controller.abort()
+  }, [])
   const header = useRef<HTMLElement>(null)
   const { scrollY } = useScroll()
   useMotionValueEvent(scrollY, 'change', (value) => setScrolled(value > 24))
@@ -66,6 +82,26 @@ export function SiteHeader() {
         >
           Đặt hàng theo yêu cầu
         </button>
+        <nav className="site-header__account" aria-label="Tài khoản">
+          {role ? (
+            <Link
+              to={role === 'admin' ? '/admin' : '/account'}
+              preload={false}
+              onClick={closeMenu}
+            >
+              {role === 'admin' ? 'Quản trị' : 'Tài khoản'}
+            </Link>
+          ) : (
+            <>
+              <Link to="/login" preload={false} onClick={closeMenu}>
+                Đăng nhập
+              </Link>
+              <Link to="/signup" preload={false} onClick={closeMenu}>
+                Đăng ký
+              </Link>
+            </>
+          )}
+        </nav>
         <button
           type="button"
           className="menu-toggle"

@@ -1,30 +1,39 @@
 import { useSyncExternalStore } from 'react'
-import type { QuoteRequest } from '#/data/types'
+import type { QuoteInput, QuoteReceipt } from '#/data/types'
 
-/**
- * Lưu trữ cục bộ cho chế độ demo. Khi có backend, thay phần thân của
- * `saveQuoteRequest` bằng lời gọi API và giữ nguyên chữ ký hàm.
- */
+type LocalReceipt = QuoteReceipt & { status: 'sent' | 'saved-locally' }
+
 const REQUESTS_KEY = 'vcraft:quote-requests:v1'
 const DRAFT_KEY = 'vcraft:quote-draft:v1'
 
-const EMPTY: Array<QuoteRequest> = []
-let cache: Array<QuoteRequest> | null = null
+const EMPTY: Array<LocalReceipt> = []
+let cache: Array<LocalReceipt> | null = null
 const listeners = new Set<() => void>()
 
-function readRequests(): Array<QuoteRequest> {
+function readRequests(): Array<LocalReceipt> {
   if (cache) return cache
   try {
     const raw = window.localStorage.getItem(REQUESTS_KEY)
     const parsed: unknown = raw ? JSON.parse(raw) : []
-    cache = Array.isArray(parsed) ? (parsed as Array<QuoteRequest>) : EMPTY
+    cache = Array.isArray(parsed)
+      ? (parsed as Array<LocalReceipt>).map(
+          ({ id, code, quantity, productType, deadline, status }) => ({
+            id,
+            code,
+            quantity,
+            productType,
+            deadline,
+            status,
+          }),
+        )
+      : EMPTY
   } catch {
     cache = EMPTY
   }
   return cache
 }
 
-function writeRequests(next: Array<QuoteRequest>) {
+function writeRequests(next: Array<LocalReceipt>) {
   window.localStorage.setItem(REQUESTS_KEY, JSON.stringify(next))
   cache = next
   listeners.forEach((notify) => notify())
@@ -46,33 +55,31 @@ function subscribe(notify: () => void) {
 }
 
 /** Danh sách yêu cầu báo giá đã lưu trên thiết bị này, mới nhất trước. */
-export function useQuoteRequests(): Array<QuoteRequest> {
+export function useQuoteRequests(): Array<LocalReceipt> {
   return useSyncExternalStore(subscribe, readRequests, () => EMPTY)
 }
 
-export type QuoteInput = Omit<
-  QuoteRequest,
-  'id' | 'code' | 'createdAt' | 'status'
->
-
-/** Ném lỗi nếu trình duyệt không cho ghi localStorage. */
 export async function saveQuoteRequest(
+  id: string,
   input: QuoteInput,
-): Promise<QuoteRequest> {
-  // Giả lập độ trễ mạng để giao diện có trạng thái "đang gửi".
-  await new Promise((resolve) => window.setTimeout(resolve, 900))
-  const now = new Date()
-  const existing = readRequests()
-  const stamp = `${String(now.getFullYear()).slice(2)}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`
-  const request: QuoteRequest = {
-    ...input,
-    id: `yc-${now.getTime()}`,
-    code: `YC-${stamp}-${String(existing.length + 1).padStart(2, '0')}`,
-    createdAt: now.toISOString(),
-    status: 'saved-locally',
+): Promise<QuoteReceipt> {
+  const response = await fetch('/api/quotes', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...input, id }),
+  })
+  if (!response.ok) throw new Error('Không gửi được yêu cầu báo giá.')
+  const receipt = (await response.json()) as QuoteReceipt
+  try {
+    cache = null
+    writeRequests([
+      { ...receipt, status: 'sent' },
+      ...readRequests().filter((request) => request.id !== receipt.id),
+    ])
+  } catch {
+    // Máy chủ đã nhận được yêu cầu dù trình duyệt không lưu được biên nhận.
   }
-  writeRequests([request, ...existing])
-  return request
+  return receipt
 }
 
 export function clearQuoteRequests() {
