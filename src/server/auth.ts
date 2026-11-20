@@ -6,6 +6,7 @@ import {
 } from '@tanstack/react-start/server'
 import { database, withTransaction } from './db'
 import { hashPassword, verifyPassword } from './password'
+import type { AccountRole, ArtisanStatus, SignupRole } from '#/lib/account'
 import type { PoolClient } from 'pg'
 
 const SECURE = process.env.NODE_ENV === 'production'
@@ -35,14 +36,16 @@ function currentToken() {
 type Account = {
   email: string
   displayName: string | null
-  role: 'admin' | 'customer'
+  role: AccountRole
+  artisanStatus: ArtisanStatus | null
 }
 
 export async function currentAccount() {
   const token = currentToken()
   if (!token) return null
   const { rows } = await database().query<Account>(
-    `SELECT accounts.email, accounts.display_name AS "displayName", accounts.role
+    `SELECT accounts.email, accounts.display_name AS "displayName", accounts.role,
+            accounts.artisan_status AS "artisanStatus"
      FROM accounts JOIN sessions ON sessions.account_email = accounts.email
      WHERE token_hash = $1 AND expires_at > CURRENT_TIMESTAMP`,
     [token],
@@ -132,7 +135,12 @@ export async function signIn(email: string, password: string) {
   return session.role
 }
 
-export async function signUp(email: string, name: string, password: string) {
+export async function signUp(
+  email: string,
+  name: string,
+  password: string,
+  role: SignupRole,
+) {
   if (beginPasswordAttempt() === null) return 'limited'
 
   let hash: string
@@ -143,9 +151,10 @@ export async function signUp(email: string, name: string, password: string) {
   }
   const token = await withTransaction(async (client) => {
     const inserted = await client.query(
-      `INSERT INTO accounts (email, display_name, password_hash, role)
-       VALUES ($1, $2, $3, 'customer') ON CONFLICT (email) DO NOTHING`,
-      [email, name, hash],
+      `INSERT INTO accounts (email, display_name, password_hash, role, artisan_status)
+       VALUES ($1, $2, $3, $4, CASE WHEN $4 = 'artisan' THEN 'pending' END)
+       ON CONFLICT (email) DO NOTHING`,
+      [email, name, hash, role],
     )
     return inserted.rowCount ? await issueSession(client, email) : null
   })

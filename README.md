@@ -51,11 +51,19 @@ Start supplies the default client hydration and server rendering entry points. F
 
 ## Sign-in and registration
 
-Run `npm run db:migrate` when upgrading an existing installation to add visitor accounts. Existing admin accounts and sessions carry forward.
+Run `npm run db:migrate` when upgrading an existing installation to enable artisan registration and the artisan workspace. Existing accounts and sessions carry forward.
 
-`/signup` registers a visitor account and signs them in. `/login` accepts both visitor and admin accounts. Visitors go to `/account`, and admins go to `/admin`. The public navigation links to both pages.
+On `/signup`, choose `Khách hàng` (customer) or `Nghệ nhân` (artisan), then complete the registration form. Signup signs you in automatically. `/login` accepts all account roles. Customers go to `/account`, artisans to `/artisan`, and admins to `/admin`.
+
+Artisans save their workshop profile in `/artisan`, then publish products with dated production journals in `/san-pham`. Use public HTTPS links for workshop and product photos. Workshop information and certificate details are provided by the artisan.
+
+Signed-in customers can submit quote requests and read workshop replies in `/account`. Registered workshops appear in the admin quote allocation form. Artisans can reply to their assigned requests and optionally include a per-item quote. Admins can see all replies and use the contact details on older requests to reach buyers.
 
 ## Admin setup
+
+New artisan registrations wait for approval. In `/admin`, open **Hộ gia đình** and verify that the applicant is a local craft household before approving the account. Approval grants workshop access and makes its listings eligible for public display. Accounts created before the approval workflow also start in **Chờ duyệt** when migrating.
+
+In **Tin cộng đồng**, save or publish notices about material prices, power outages, and support policies. Published notices appear at `/tin-cong-dong`. **Yêu cầu báo giá** contains the existing wholesale allocation workflow.
 
 Create an admin from the repository root. In Bash, enter a password of at least 15 characters when prompted.
 

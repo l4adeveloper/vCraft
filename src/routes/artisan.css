@@ -1,0 +1,142 @@
+.artisan-workspace {
+  max-width: 74rem;
+  padding-bottom: clamp(3rem, 8vw, 6rem);
+}
+.artisan-banner {
+  padding: clamp(1.75rem, 5vw, 3.5rem);
+  margin-block: 1.5rem;
+  border-radius: 0.5rem;
+  background: var(--lam-deep);
+  color: var(--paper);
+}
+.artisan-banner h1,
+.artisan-panel h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 550;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.artisan-banner h1 {
+  font-size: var(--text-title);
+}
+.artisan-banner p,
+.artisan-panel header p {
+  margin: 0.5rem 0 0;
+  overflow-wrap: anywhere;
+}
+.artisan-layout {
+  display: grid;
+  grid-template-columns: minmax(11rem, 15rem) minmax(0, 1fr);
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  align-items: start;
+}
+.artisan-nav {
+  display: grid;
+  gap: 0.35rem;
+  position: sticky;
+  top: 1rem;
+  padding: 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: var(--paper-deep);
+}
+.artisan-nav a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.65rem 0.8rem;
+  border-radius: 0.25rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.artisan-nav a:hover,
+.artisan-nav a:focus-visible {
+  background: var(--paper);
+  color: var(--lam-deep);
+}
+.artisan-nav span {
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+.artisan-sections,
+.artisan-panel {
+  display: grid;
+  gap: 1rem;
+}
+.artisan-panel {
+  padding: clamp(1rem, 3vw, 1.75rem);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: #fffaf2;
+  scroll-margin-top: 1rem;
+}
+.artisan-panel h2 {
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+}
+.artisan-panel header p,
+.artisan-form small,
+.artisan-journal-fields p {
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}
+.artisan-form fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: grid;
+  gap: 0.95rem;
+}
+.artisan-form .field {
+  display: grid;
+  margin: 0;
+  gap: 0.35rem;
+}
+.artisan-form__pair,
+.artisan-stagerow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+.artisan-form .artisan-journal-fields {
+  padding: 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.25rem;
+}
+.artisan-journal-fields legend {
+  padding-inline: 0.35rem;
+  font-weight: 600;
+}
+.artisan-journal-fields p {
+  margin: 0;
+}
+.artisan-form__actions {
+  display: flex;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.artisan-form__actions p {
+  margin: 0;
+}
+.artisan-saved {
+  color: #25472d;
+}
+@media (max-width: 48rem) {
+  .artisan-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .artisan-nav {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 34rem) {
+  .artisan-form__pair,
+  .artisan-stagerow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

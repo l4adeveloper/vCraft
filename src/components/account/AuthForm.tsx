@@ -1,17 +1,31 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useHydrated } from '@tanstack/react-router'
+import { accountPage } from '#/lib/account'
+import type { AccountRole, SignupRole } from '#/lib/account'
 import type { FormEvent } from 'react'
+
+const SIGNUP_ROLES = [
+  { value: 'customer', label: 'Khách hàng' },
+  { value: 'artisan', label: 'Nghệ nhân' },
+] as const
 
 export function AuthForm({ mode }: { mode: 'login' | 'signup' }) {
   const hydrated = useHydrated()
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [signupRole, setSignupRole] = useState<SignupRole | null>(null)
+  const nameInput = useRef<HTMLInputElement>(null)
   const signingUp = mode === 'signup'
+  const pickingRole = signingUp && signupRole === null
   const title = signingUp ? 'Đăng ký tài khoản' : 'Đăng nhập'
+
+  useEffect(() => {
+    if (signupRole) nameInput.current?.focus()
+  }, [signupRole])
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (busy) return
+    if (busy || pickingRole) return
     const form = new FormData(event.currentTarget)
     const password = form.get('password')
     if (signingUp && password !== form.get('confirmPassword')) {
@@ -30,13 +44,12 @@ export function AuthForm({ mode }: { mode: 'login' | 'signup' }) {
           email: form.get('email'),
           password,
           name: form.get('name'),
+          role: signupRole ?? undefined,
         }),
       })
       if (response.ok) {
-        const { role } = (await response.json()) as { role?: string }
-        window.location.assign(
-          role === 'admin' && !signingUp ? '/admin' : '/account',
-        )
+        const { role } = (await response.json()) as { role?: AccountRole }
+        window.location.assign(accountPage(role ?? signupRole ?? 'customer'))
         return
       }
 
@@ -70,17 +83,51 @@ export function AuthForm({ mode }: { mode: 'login' | 'signup' }) {
         vCraft
       </Link>
       <h1>{title}</h1>
+      {pickingRole && (
+        <fieldset className="account-panel__role-picker" disabled={!hydrated}>
+          <legend>Bạn muốn đăng ký với vai trò nào?</legend>
+          {SIGNUP_ROLES.map(({ value, label }) => (
+            <button
+              key={value}
+              className="btn btn--ghost"
+              type="button"
+              onClick={() => setSignupRole(value)}
+            >
+              {label}
+            </button>
+          ))}
+        </fieldset>
+      )}
       <form
+        hidden={pickingRole}
         onSubmit={submit}
         method="post"
         action={signingUp ? '/api/signup' : '/api/auth'}
       >
-        <fieldset disabled={!hydrated || busy}>
+        <fieldset disabled={!hydrated || busy || pickingRole}>
+          {signingUp && signupRole && (
+            <div className="account-panel__role-summary">
+              <span>
+                {SIGNUP_ROLES.find(({ value }) => value === signupRole)?.label}
+              </span>
+              <button
+                className="btn btn--ghost btn--small"
+                type="button"
+                onClick={() => {
+                  setSignupRole(null)
+                  setError('')
+                }}
+              >
+                Đổi loại tài khoản
+              </button>
+            </div>
+          )}
           {signingUp && (
             <div className="field">
               <label htmlFor="auth-name">Họ và tên</label>
               <input
                 id="auth-name"
+                ref={nameInput}
                 name="name"
                 autoComplete="name"
                 required

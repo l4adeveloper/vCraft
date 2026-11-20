@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Link } from '@tanstack/react-router'
 import { AnimatePresence, motion } from 'motion/react'
 import { ArrowRight, ArrowUpRight } from '#/components/ui/Icon'
 import { Photo } from '#/components/ui/Photo'
@@ -128,10 +129,10 @@ export function Exhibition() {
             Bộ sưu tập mẫu · ảnh và giá tham khảo là dữ liệu minh họa, chưa phải
             sản phẩm đang chào bán.
           </p>
-          <a className="link-arrow" href="#dat-hang">
-            Cần số lượng lớn hoặc in logo riêng?
+          <Link className="link-arrow" to="/san-pham">
+            Xem sản phẩm do xưởng đăng
             <ArrowRight size={18} />
-          </a>
+          </Link>
         </div>
       </div>
     </section>

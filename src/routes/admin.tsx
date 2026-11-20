@@ -7,16 +7,37 @@ import {
   useRouter,
 } from '@tanstack/react-router'
 import { SignOutButton } from '#/components/account/SignOutButton'
-import { getProduct, workshops } from '#/data'
+import {
+  ArtisanRegistrations,
+  ManageNotices,
+} from '#/components/admin/GovernancePanels'
+import { QuoteReplies } from '#/components/artisan/QuoteReplies'
+import { getProduct } from '#/data'
 import { QUOTE_STATUSES } from '#/data/types'
 import { formatDate, formatNumber } from '#/lib/format'
 import { vietnamCalendarDate } from '#/lib/quote'
 import { getAdminDashboard } from '#/server/admin'
 import type { AdminQuote, QuoteStatus } from '#/data/types'
+import type { QuoteReply } from '#/lib/artisan'
 import type { FormEvent } from 'react'
 
+const SECTIONS = {
+  artisans: 'Hộ gia đình',
+  notices: 'Tin cộng đồng',
+  quotes: 'Yêu cầu báo giá',
+} as const
+type Section = keyof typeof SECTIONS
+
 export const Route = createFileRoute('/admin')({
-  validateSearch: (search: Record<string, unknown>): { page?: number } => ({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { page?: number; tab?: Section } => ({
+    tab:
+      search.tab === 'notices' ||
+      search.tab === 'quotes' ||
+      search.tab === 'artisans'
+        ? search.tab
+        : undefined,
     page:
       typeof search.page === 'number' &&
       Number.isSafeInteger(search.page) &&
@@ -33,15 +54,26 @@ export const Route = createFileRoute('/admin')({
   headers: () => ({ 'Cache-Control': 'private, no-store' }),
   head: () => ({
     meta: [
-      { title: 'Quản trị yêu cầu báo giá — vCraft' },
+      { title: 'Quản trị làng nghề — vCraft' },
       { name: 'robots', content: 'noindex' },
     ],
   }),
   component: AdminDashboard,
 })
 
+type DashboardQuote = AdminQuote & {
+  replies: Array<QuoteReply>
+  productName: string | null
+}
+type DashboardWorkshops = Array<{ id: string; name: string; active: boolean }>
+
 function AdminDashboard() {
-  const { admin, quotes, total, page, pages } = Route.useLoaderData()
+  const { admin, registrations, notices } = Route.useLoaderData()
+  const search = Route.useSearch()
+  const tab = search.tab ?? (search.page ? 'quotes' : 'artisans')
+  const pending = registrations.filter(
+    ({ status }) => status === 'pending',
+  ).length
   return (
     <div className="admin-dashboard shell">
       <header className="admin-toolbar">
@@ -54,13 +86,47 @@ function AdminDashboard() {
         </div>
       </header>
       <div className="admin-heading">
-        <h1>Yêu cầu báo giá</h1>
-        <p>{formatNumber(total)} yêu cầu</p>
+        <h1>Quản trị làng nghề</h1>
       </div>
+      <nav className="governance-tabs" aria-label="Quản trị làng nghề">
+        {(Object.keys(SECTIONS) as Array<Section>).map((section) => (
+          <Link
+            key={section}
+            to="/admin"
+            search={{ tab: section }}
+            aria-current={section === tab ? 'page' : undefined}
+            preload={false}
+          >
+            {SECTIONS[section]}
+            {section === 'artisans' && pending > 0 && (
+              <span aria-label={`${pending} tài khoản chờ duyệt`}>
+                {pending}
+              </span>
+            )}
+          </Link>
+        ))}
+      </nav>
+      {tab === 'artisans' && (
+        <ArtisanRegistrations registrations={registrations} />
+      )}
+      {tab === 'notices' && <ManageNotices notices={notices} />}
+      {tab === 'quotes' && <ManageQuotes />}
+    </div>
+  )
+}
+
+function ManageQuotes() {
+  const { quotes, total, page, pages, workshops } = Route.useLoaderData()
+  return (
+    <section aria-labelledby="admin-quotes-heading">
+      <header className="governance-heading">
+        <h2 id="admin-quotes-heading">Yêu cầu báo giá</h2>
+        <p>{formatNumber(total)} yêu cầu</p>
+      </header>
       {quotes.length ? (
         <div className="admin-quotes">
           {quotes.map((quote) => (
-            <QuoteDetails key={quote.id} quote={quote} />
+            <QuoteDetails key={quote.id} quote={quote} workshops={workshops} />
           ))}
         </div>
       ) : (
@@ -69,7 +135,11 @@ function AdminDashboard() {
       {pages > 1 && (
         <nav className="admin-pages" aria-label="Phân trang yêu cầu">
           {page > 1 && (
-            <Link to="/admin" search={{ page: page - 1 }} preload={false}>
+            <Link
+              to="/admin"
+              search={{ tab: 'quotes', page: page - 1 }}
+              preload={false}
+            >
               Trang trước
             </Link>
           )}
@@ -77,18 +147,29 @@ function AdminDashboard() {
             Trang {page}/{pages}
           </span>
           {page < pages && (
-            <Link to="/admin" search={{ page: page + 1 }} preload={false}>
+            <Link
+              to="/admin"
+              search={{ tab: 'quotes', page: page + 1 }}
+              preload={false}
+            >
               Trang sau
             </Link>
           )}
         </nav>
       )}
-    </div>
+    </section>
   )
 }
 
-function QuoteDetails({ quote }: { quote: AdminQuote }) {
+function QuoteDetails({
+  quote,
+  workshops,
+}: {
+  quote: DashboardQuote
+  workshops: DashboardWorkshops
+}) {
   const product = quote.productId ? getProduct(quote.productId) : undefined
+  const productName = quote.productName ?? product?.name
   const assigned = quote.allocations.reduce(
     (total, item) => total + item.quantity,
     0,
@@ -147,10 +228,10 @@ function QuoteDetails({ quote }: { quote: AdminQuote }) {
               </a>
             </dd>
           </div>
-          {product && (
+          {productName && (
             <div>
               <dt>Sản phẩm tham khảo</dt>
-              <dd>{product.name}</dd>
+              <dd>{productName}</dd>
             </div>
           )}
           {quote.customization && (
@@ -160,25 +241,38 @@ function QuoteDetails({ quote }: { quote: AdminQuote }) {
             </div>
           )}
         </dl>
-        <QuoteEditor key={quote.version} quote={quote} />
+        <QuoteReplies replies={quote.replies} />
+        <QuoteEditor key={quote.version} quote={quote} workshops={workshops} />
       </div>
     </details>
   )
 }
 
-function QuoteEditor({ quote }: { quote: AdminQuote }) {
+function QuoteEditor({
+  quote,
+  workshops,
+}: {
+  quote: DashboardQuote
+  workshops: DashboardWorkshops
+}) {
   const hydrated = useHydrated()
   const router = useRouter()
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [conflict, setConflict] = useState(false)
+  const assigned = new Map(
+    quote.allocations.map(({ workshopId, quantity }) => [workshopId, quantity]),
+  )
+  const availableWorkshops = workshops.filter(
+    ({ id, active }) => active || assigned.has(id),
+  )
 
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (busy) return
     const data = new FormData(event.currentTarget)
     const status = data.get('status') as QuoteStatus
-    const allocations = workshops.flatMap((workshop) => {
+    const allocations = availableWorkshops.flatMap((workshop) => {
       const quantity = Number(data.get(workshop.id))
       return quantity > 0 ? [{ workshopId: workshop.id, quantity }] : []
     })
@@ -238,10 +332,11 @@ function QuoteEditor({ quote }: { quote: AdminQuote }) {
         <fieldset className="admin-workshops">
           <legend>Phân bổ số lượng theo xưởng</legend>
           <div className="admin-workshops__grid">
-            {workshops.map((workshop) => (
+            {availableWorkshops.map((workshop) => (
               <div className="field" key={workshop.id}>
                 <label htmlFor={`${quote.id}-${workshop.id}`}>
                   {workshop.name}
+                  {!workshop.active && ' · Chưa được duyệt'}
                 </label>
                 <input
                   id={`${quote.id}-${workshop.id}`}
@@ -249,13 +344,11 @@ function QuoteEditor({ quote }: { quote: AdminQuote }) {
                   type="number"
                   inputMode="numeric"
                   min={0}
-                  max={quote.quantity}
-                  step={1}
-                  defaultValue={
-                    quote.allocations.find(
-                      (entry) => entry.workshopId === workshop.id,
-                    )?.quantity ?? 0
+                  max={
+                    workshop.active ? quote.quantity : assigned.get(workshop.id)
                   }
+                  step={1}
+                  defaultValue={assigned.get(workshop.id) ?? 0}
                 />
               </div>
             ))}

@@ -12,12 +12,18 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as ArtisanRouteImport } from './routes/artisan'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as SanPhamRouteImport } from './routes/san-pham'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as TinCongDongRouteImport } from './routes/tin-cong-dong'
+import { Route as ApiAdminRouteImport } from './routes/api/admin'
+import { Route as ApiArtisanRouteImport } from './routes/api/artisan'
 import { Route as ApiAuthRouteImport } from './routes/api/auth'
 import { Route as ApiQuotesRouteImport } from './routes/api/quotes'
 import { Route as ApiSignupRouteImport } from './routes/api/signup'
 import { Route as HomeIndexRouteImport } from './routes/home/index'
+import { Route as SanPhamIdRouteImport } from './routes/san-pham_.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,14 +40,39 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArtisanRoute = ArtisanRouteImport.update({
+  id: '/artisan',
+  path: '/artisan',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SanPhamRoute = SanPhamRouteImport.update({
+  id: '/san-pham',
+  path: '/san-pham',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TinCongDongRoute = TinCongDongRouteImport.update({
+  id: '/tin-cong-dong',
+  path: '/tin-cong-dong',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminRoute = ApiAdminRouteImport.update({
+  id: '/api/admin',
+  path: '/api/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiArtisanRoute = ApiArtisanRouteImport.update({
+  id: '/api/artisan',
+  path: '/api/artisan',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAuthRoute = ApiAuthRouteImport.update({
@@ -64,27 +95,44 @@ const HomeIndexRoute = HomeIndexRouteImport.update({
   path: '/home/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SanPhamIdRoute = SanPhamIdRouteImport.update({
+  id: '/san-pham_/$id',
+  path: '/san-pham/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/admin': typeof AdminRoute
+  '/artisan': typeof ArtisanRoute
   '/login': typeof LoginRoute
+  '/san-pham': typeof SanPhamRoute
   '/signup': typeof SignupRoute
+  '/tin-cong-dong': typeof TinCongDongRoute
+  '/api/admin': typeof ApiAdminRoute
+  '/api/artisan': typeof ApiArtisanRoute
   '/api/auth': typeof ApiAuthRoute
   '/api/quotes': typeof ApiQuotesRoute
   '/api/signup': typeof ApiSignupRoute
+  '/san-pham/$id': typeof SanPhamIdRoute
   '/home/': typeof HomeIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/admin': typeof AdminRoute
+  '/artisan': typeof ArtisanRoute
   '/login': typeof LoginRoute
+  '/san-pham': typeof SanPhamRoute
   '/signup': typeof SignupRoute
+  '/tin-cong-dong': typeof TinCongDongRoute
+  '/api/admin': typeof ApiAdminRoute
+  '/api/artisan': typeof ApiArtisanRoute
   '/api/auth': typeof ApiAuthRoute
   '/api/quotes': typeof ApiQuotesRoute
   '/api/signup': typeof ApiSignupRoute
+  '/san-pham/$id': typeof SanPhamIdRoute
   '/home': typeof HomeIndexRoute
 }
 export interface FileRoutesById {
@@ -92,11 +140,17 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/admin': typeof AdminRoute
+  '/artisan': typeof ArtisanRoute
   '/login': typeof LoginRoute
+  '/san-pham': typeof SanPhamRoute
   '/signup': typeof SignupRoute
+  '/tin-cong-dong': typeof TinCongDongRoute
+  '/api/admin': typeof ApiAdminRoute
+  '/api/artisan': typeof ApiArtisanRoute
   '/api/auth': typeof ApiAuthRoute
   '/api/quotes': typeof ApiQuotesRoute
   '/api/signup': typeof ApiSignupRoute
+  '/san-pham_/$id': typeof SanPhamIdRoute
   '/home/': typeof HomeIndexRoute
 }
 export interface FileRouteTypes {
@@ -105,33 +159,51 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/admin'
+    | '/artisan'
     | '/login'
+    | '/san-pham'
     | '/signup'
+    | '/tin-cong-dong'
+    | '/api/admin'
+    | '/api/artisan'
     | '/api/auth'
     | '/api/quotes'
     | '/api/signup'
+    | '/san-pham/$id'
     | '/home/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/account'
     | '/admin'
+    | '/artisan'
     | '/login'
+    | '/san-pham'
     | '/signup'
+    | '/tin-cong-dong'
+    | '/api/admin'
+    | '/api/artisan'
     | '/api/auth'
     | '/api/quotes'
     | '/api/signup'
+    | '/san-pham/$id'
     | '/home'
   id:
     | '__root__'
     | '/'
     | '/account'
     | '/admin'
+    | '/artisan'
     | '/login'
+    | '/san-pham'
     | '/signup'
+    | '/tin-cong-dong'
+    | '/api/admin'
+    | '/api/artisan'
     | '/api/auth'
     | '/api/quotes'
     | '/api/signup'
+    | '/san-pham_/$id'
     | '/home/'
   fileRoutesById: FileRoutesById
 }
@@ -139,11 +211,17 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRoute
   AdminRoute: typeof AdminRoute
+  ArtisanRoute: typeof ArtisanRoute
   LoginRoute: typeof LoginRoute
+  SanPhamRoute: typeof SanPhamRoute
   SignupRoute: typeof SignupRoute
+  TinCongDongRoute: typeof TinCongDongRoute
+  ApiAdminRoute: typeof ApiAdminRoute
+  ApiArtisanRoute: typeof ApiArtisanRoute
   ApiAuthRoute: typeof ApiAuthRoute
   ApiQuotesRoute: typeof ApiQuotesRoute
   ApiSignupRoute: typeof ApiSignupRoute
+  SanPhamIdRoute: typeof SanPhamIdRoute
   HomeIndexRoute: typeof HomeIndexRoute
 }
 
@@ -170,6 +248,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/artisan': {
+      id: '/artisan'
+      path: '/artisan'
+      fullPath: '/artisan'
+      preLoaderRoute: typeof ArtisanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -177,11 +262,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/san-pham': {
+      id: '/san-pham'
+      path: '/san-pham'
+      fullPath: '/san-pham'
+      preLoaderRoute: typeof SanPhamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tin-cong-dong': {
+      id: '/tin-cong-dong'
+      path: '/tin-cong-dong'
+      fullPath: '/tin-cong-dong'
+      preLoaderRoute: typeof TinCongDongRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin': {
+      id: '/api/admin'
+      path: '/api/admin'
+      fullPath: '/api/admin'
+      preLoaderRoute: typeof ApiAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/artisan': {
+      id: '/api/artisan'
+      path: '/api/artisan'
+      fullPath: '/api/artisan'
+      preLoaderRoute: typeof ApiArtisanRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/auth': {
@@ -212,6 +325,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HomeIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/san-pham_/$id': {
+      id: '/san-pham_/$id'
+      path: '/san-pham/$id'
+      fullPath: '/san-pham/$id'
+      preLoaderRoute: typeof SanPhamIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -219,11 +339,17 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRoute,
   AdminRoute: AdminRoute,
+  ArtisanRoute: ArtisanRoute,
   LoginRoute: LoginRoute,
+  SanPhamRoute: SanPhamRoute,
   SignupRoute: SignupRoute,
+  TinCongDongRoute: TinCongDongRoute,
+  ApiAdminRoute: ApiAdminRoute,
+  ApiArtisanRoute: ApiArtisanRoute,
   ApiAuthRoute: ApiAuthRoute,
   ApiQuotesRoute: ApiQuotesRoute,
   ApiSignupRoute: ApiSignupRoute,
+  SanPhamIdRoute: SanPhamIdRoute,
   HomeIndexRoute: HomeIndexRoute,
 }
 export const routeTree = rootRouteImport

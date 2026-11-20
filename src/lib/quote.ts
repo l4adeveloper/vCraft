@@ -44,7 +44,7 @@ export function isoDate(offsetDays: number): string {
   return vietnamCalendarDate(Date.now() + offsetDays * 86_400_000)
 }
 
-function isValidDate(value: string) {
+export function isValidDate(value: string) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false
   const date = new Date(value)
   return Number.isFinite(date.getTime()) && date.toISOString().startsWith(value)

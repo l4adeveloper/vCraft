@@ -3,6 +3,7 @@ import { Drawer } from '#/components/ui/Drawer'
 import { ArrowLeft, Close } from '#/components/ui/Icon'
 import { DUR, EASE_OUT } from '#/lib/motion'
 import { overlayKey, useExplore } from '#/state/explore'
+import { useSessionRole } from '#/state/session'
 import { ArtisanSheet } from './ArtisanSheet'
 import { BatchSheet } from './BatchSheet'
 import { ProductSheet } from './ProductSheet'
@@ -28,7 +29,11 @@ function Sheet({ overlay }: { overlay: Overlay }) {
       return <BatchSheet id={overlay.id} />
     case 'quote':
       return (
-        <QuoteSheet productId={overlay.productId} preset={overlay.preset} />
+        <QuoteSheet
+          productId={overlay.productId}
+          publishedProductName={overlay.publishedProductName}
+          preset={overlay.preset}
+        />
       )
   }
 }
@@ -36,7 +41,9 @@ function Sheet({ overlay }: { overlay: Overlay }) {
 /** Gắn một lần ở gốc ứng dụng; hiển thị overlay trên cùng của chồng. */
 export function OverlayHost() {
   const { stack, back, close } = useExplore()
+  const role = useSessionRole()
   const current = stack.at(-1)
+  if (current?.type === 'quote' && role !== 'customer') return null
 
   return (
     <Drawer

@@ -9,8 +9,9 @@ export const Route = createFileRoute('/api/signup')({
         if (!isSameOrigin(request)) return reply({}, 403)
         const input = await readJson(request)
         if (!record(input)) return reply({}, 400)
-        const { email, name, password } = input
+        const { email, name, password, role } = input
         if (
+          (role !== 'customer' && role !== 'artisan') ||
           typeof email !== 'string' ||
           email.length > 254 ||
           !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) ||
@@ -29,6 +30,7 @@ export const Route = createFileRoute('/api/signup')({
           email.trim().toLowerCase(),
           name.trim(),
           password,
+          role,
         )
         if (result === 'limited') return reply({}, 429)
         if (result === 'unavailable') return reply({}, 409)

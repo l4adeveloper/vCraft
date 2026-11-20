@@ -5,6 +5,7 @@ import { WheelMark } from '#/components/ui/WheelMark'
 import { formatDate, formatNumber } from '#/lib/format'
 import { clearQuoteRequests, useQuoteRequests } from '#/lib/storage'
 import { useExplore } from '#/state/explore'
+import { useSessionRole } from '#/state/session'
 
 const NEEDS = [
   {
@@ -23,6 +24,7 @@ const NEEDS = [
 
 export function CustomOrder() {
   const { open } = useExplore()
+  const isBuyer = useSessionRole() === 'customer'
   const requests = useQuoteRequests()
 
   return (
@@ -78,25 +80,27 @@ export function CustomOrder() {
               <dd>30 ngày</dd>
             </div>
           </dl>
-          <div className="custom__actions">
-            <button
-              type="button"
-              className="btn btn--primary"
-              onClick={() => open({ type: 'quote' })}
-            >
-              Gửi yêu cầu báo giá
-              <ArrowRight />
-            </button>
-            <button
-              type="button"
-              className="btn btn--ghost"
-              onClick={() => open({ type: 'quote', preset: 'example' })}
-            >
-              Điền thử theo ví dụ
-            </button>
-          </div>
+          {isBuyer && (
+            <div className="custom__actions">
+              <button
+                type="button"
+                className="btn btn--primary"
+                onClick={() => open({ type: 'quote' })}
+              >
+                Gửi yêu cầu báo giá
+                <ArrowRight />
+              </button>
+              <button
+                type="button"
+                className="btn btn--ghost"
+                onClick={() => open({ type: 'quote', preset: 'example' })}
+              >
+                Điền thử theo ví dụ
+              </button>
+            </div>
+          )}
 
-          {requests.length > 0 ? (
+          {isBuyer && requests.length > 0 ? (
             <div className="custom__saved">
               <div className="custom__saved-head">
                 <h3>Yêu cầu trên thiết bị này</h3>

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from '@tanstack/react-router'
 import type { ChangeEvent, FormEvent, ReactNode } from 'react'
 import { ArrowRight, Check } from '#/components/ui/Icon'
 import { getBatch, getProduct, getWorkshop } from '#/data'
@@ -79,10 +80,15 @@ function initialValues(
 
 interface QuoteSheetProps {
   productId?: string
+  publishedProductName?: string
   preset?: 'example'
 }
 
-export function QuoteSheet({ productId, preset }: QuoteSheetProps) {
+export function QuoteSheet({
+  productId,
+  publishedProductName,
+  preset,
+}: QuoteSheetProps) {
   const { close } = useExplore()
   const product = productId ? getProduct(productId) : undefined
   const workshop = product ? getWorkshop(product.workshopId) : undefined
@@ -153,7 +159,7 @@ export function QuoteSheet({ productId, preset }: QuoteSheetProps) {
         organization: values.organization.trim(),
         email: values.email.trim(),
         phone: values.phone.trim(),
-        productId: product?.id,
+        productId,
       })
       submissionId.current = null
       clearDraft()
@@ -207,8 +213,12 @@ export function QuoteSheet({ productId, preset }: QuoteSheetProps) {
           </div>
         </dl>
         <p className="notice">
-          Ban quản lý làng nghề đã nhận được yêu cầu và có thể phản hồi qua
-          email hoặc điện thoại bạn đã để lại.
+          Ban quản lý làng nghề đã nhận được yêu cầu. Bạn có thể xem phản hồi từ
+          xưởng trong{' '}
+          <Link to="/account" onClick={close}>
+            tài khoản của mình
+          </Link>
+          .
         </p>
         <div className="quote-done__actions">
           <button type="button" className="btn btn--primary" onClick={close}>
@@ -234,9 +244,9 @@ export function QuoteSheet({ productId, preset }: QuoteSheetProps) {
         </p>
       </header>
 
-      {product ? (
+      {product || publishedProductName ? (
         <p className="quote__ref">
-          Đang hỏi mua: <strong>{product.name}</strong>
+          Đang hỏi mua: <strong>{product?.name ?? publishedProductName}</strong>
           {workshop ? ` · ${workshop.name}` : ''}
         </p>
       ) : null}
@@ -369,10 +379,6 @@ export function QuoteSheet({ productId, preset }: QuoteSheetProps) {
           </FieldRow>
         </div>
       </fieldset>
-
-      <p className="demo-note">
-        Bản demo: yêu cầu chỉ được lưu trên trình duyệt này, chưa gửi đi đâu.
-      </p>
 
       <div className="sheet__actions">
         <button

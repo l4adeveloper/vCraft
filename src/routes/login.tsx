@@ -1,5 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { AuthForm } from '#/components/account/AuthForm'
+import { accountPage } from '#/lib/account'
 import { getCurrentAccount } from '#/server/account'
 
 export const Route = createFileRoute('/login')({
@@ -7,7 +8,7 @@ export const Route = createFileRoute('/login')({
     const account = await getCurrentAccount()
     if (account)
       throw redirect({
-        to: account.role === 'admin' ? '/admin' : '/account',
+        to: accountPage(account.role),
         replace: true,
       })
   },

@@ -15,10 +15,12 @@ import {
 import { cx, formatDate, formatPrice, pad2 } from '#/lib/format'
 import { DUR, EASE_OUT } from '#/lib/motion'
 import { useExplore } from '#/state/explore'
+import { useSessionRole } from '#/state/session'
 import { MissingSheet } from './MissingSheet'
 
 export function ProductSheet({ id }: { id: string }) {
   const { open, showOnMap } = useExplore()
+  const isBuyer = useSessionRole() === 'customer'
   const [active, setActive] = useState(0)
   const product = getProduct(id)
   if (!product) return <MissingSheet what="tác phẩm" />
@@ -176,16 +178,18 @@ export function ProductSheet({ id }: { id: string }) {
 
       <p className="demo-note">{DEMO_NOTICE}</p>
 
-      <div className="sheet__actions">
-        <button
-          type="button"
-          className="btn btn--primary btn--block"
-          onClick={() => open({ type: 'quote', productId: product.id })}
-        >
-          Hỏi mua sản phẩm
-          <ArrowRight />
-        </button>
-      </div>
+      {isBuyer && (
+        <div className="sheet__actions">
+          <button
+            type="button"
+            className="btn btn--primary btn--block"
+            onClick={() => open({ type: 'quote', productId: product.id })}
+          >
+            Hỏi mua sản phẩm
+            <ArrowRight />
+          </button>
+        </div>
+      )}
     </article>
   )
 }

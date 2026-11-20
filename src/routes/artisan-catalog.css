@@ -1,0 +1,129 @@
+.artisan-catalog {
+  max-width: 74rem;
+  padding-block: 7rem clamp(3rem, 8vw, 6rem);
+}
+.artisan-catalog__heading {
+  margin-bottom: 1.5rem;
+}
+.artisan-catalog__heading a {
+  color: var(--lam-deep);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.artisan-catalog h1,
+.artisan-catalog h2 {
+  margin: 0.35rem 0 0;
+  font-family: var(--font-display);
+  font-weight: 550;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.artisan-catalog h1 {
+  font-size: var(--text-title);
+}
+.artisan-catalog__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.artisan-catalog__grid a {
+  display: block;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: #fffaf2;
+}
+.artisan-catalog__grid a:hover h2 {
+  text-decoration: underline;
+}
+.artisan-catalog__grid img,
+.published-product__photo,
+.published-product__workshop-photos img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: var(--paper-deep);
+}
+.artisan-catalog__grid a > div {
+  padding: 1rem;
+  overflow-wrap: anywhere;
+}
+.artisan-catalog__grid h2,
+.published-product__panel h2 {
+  font-size: 1.4rem;
+}
+.artisan-catalog__grid p {
+  margin: 0.4rem 0;
+  color: var(--ink-soft);
+}
+.published-product,
+.published-product__details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.25rem, 4vw, 3rem);
+}
+.published-product {
+  align-items: center;
+}
+.published-product__photo {
+  border-radius: 0.5rem;
+}
+.published-product__intro,
+.published-product__panel {
+  overflow-wrap: anywhere;
+}
+.published-product__intro p,
+.published-product__panel p {
+  white-space: pre-wrap;
+}
+.published-product__details {
+  margin-top: 2rem;
+}
+.published-product__panel {
+  padding: clamp(1rem, 3vw, 1.75rem);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: #fffaf2;
+}
+.published-product__panel h3 {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+.published-product__note,
+.published-product__timeline time {
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}
+.published-product__timeline {
+  padding: 0;
+  margin: 1.3rem 0 0;
+  list-style: none;
+}
+.published-product__timeline li {
+  padding: 0.25rem 0 0.8rem 0.9rem;
+  border-inline-start: 2px solid var(--lam);
+}
+.published-product__timeline h3,
+.published-product__timeline p {
+  margin: 0.15rem 0 0;
+}
+.published-product__workshop-photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+  gap: 0.75rem;
+  margin-block: 1rem;
+}
+.published-product__workshop-photos img {
+  border-radius: 0.3rem;
+}
+@media (max-width: 45rem) {
+  .published-product,
+  .published-product__details {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

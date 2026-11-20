@@ -15,6 +15,7 @@ import { SiteHeader } from '#/components/layout/SiteHeader'
 import { OverlayHost } from '#/components/overlays/OverlayHost'
 import { MOTION_BOOT_SCRIPT, useReducedMotion } from '#/lib/motionPref'
 import { ExploreProvider } from '#/state/explore'
+import { SessionRoleProvider } from '#/state/session'
 import './admin.css'
 import stylesheet from '../styles.css?url'
 
@@ -64,21 +65,23 @@ function RootComponent() {
   const reduced = useReducedMotion()
   const accountPage = useLocation({
     select: ({ pathname }) =>
-      /^\/(account|admin|login|signup)\/?$/.test(pathname),
+      /^\/(account|admin|artisan|login|signup)\/?$/.test(pathname),
   })
   return (
     <MotionConfig reducedMotion={reduced ? 'always' : 'never'}>
-      <ExploreProvider>
-        <a className="skip-link" href="#main-content">
-          Đến nội dung chính
-        </a>
-        {!accountPage && <SiteHeader />}
-        <main id="main-content" tabIndex={-1}>
-          <Outlet />
-        </main>
-        {!accountPage && <SiteFooter />}
-        {!accountPage && <OverlayHost />}
-      </ExploreProvider>
+      <SessionRoleProvider>
+        <ExploreProvider>
+          <a className="skip-link" href="#main-content">
+            Đến nội dung chính
+          </a>
+          {!accountPage && <SiteHeader />}
+          <main id="main-content" tabIndex={-1}>
+            <Outlet />
+          </main>
+          {!accountPage && <SiteFooter />}
+          {!accountPage && <OverlayHost />}
+        </ExploreProvider>
+      </SessionRoleProvider>
       <TanStackDevtools
         config={{ position: 'bottom-right' }}
         plugins={[

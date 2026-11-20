@@ -11,10 +11,12 @@ import {
 } from '#/data'
 import { cx, formatDate, formatPrice } from '#/lib/format'
 import { useExplore } from '#/state/explore'
+import { useSessionRole } from '#/state/session'
 import { MissingSheet } from './MissingSheet'
 
 export function ArtisanSheet({ id }: { id: string }) {
   const { open, showOnMap } = useExplore()
+  const isBuyer = useSessionRole() === 'customer'
   const artisan = getArtisan(id)
   if (!artisan) return <MissingSheet what="hồ sơ nghệ nhân" />
 
@@ -165,16 +167,18 @@ export function ArtisanSheet({ id }: { id: string }) {
 
       <p className="demo-note">{DEMO_NOTICE}</p>
 
-      <div className="sheet__actions">
-        <button
-          type="button"
-          className="btn btn--primary btn--block"
-          onClick={() => open({ type: 'quote' })}
-        >
-          Đặt hàng theo yêu cầu
-          <ArrowRight />
-        </button>
-      </div>
+      {isBuyer && (
+        <div className="sheet__actions">
+          <button
+            type="button"
+            className="btn btn--primary btn--block"
+            onClick={() => open({ type: 'quote' })}
+          >
+            Đặt hàng theo yêu cầu
+            <ArrowRight />
+          </button>
+        </div>
+      )}
     </article>
   )
 }

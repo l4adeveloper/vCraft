@@ -11,7 +11,12 @@ export type Overlay =
   | { type: 'product'; id: string }
   | { type: 'artisan'; id: string }
   | { type: 'batch'; id: string }
-  | { type: 'quote'; productId?: string; preset?: 'example' }
+  | {
+      type: 'quote'
+      productId?: string
+      publishedProductName?: string
+      preset?: 'example'
+    }
 
 interface ExploreValue {
   /** Chồng overlay: phần tử cuối là nội dung đang hiển thị trong drawer. */

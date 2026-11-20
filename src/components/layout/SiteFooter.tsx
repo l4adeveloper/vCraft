@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { ArrowRight } from '#/components/ui/Icon'
 import { useExplore } from '#/state/explore'
+import { useSessionRole } from '#/state/session'
 
 const EXPLORE_LINKS = [
   { label: 'Câu chuyện làng nghề', hash: 'cau-chuyen' },
@@ -12,6 +13,7 @@ const EXPLORE_LINKS = [
 
 export function SiteFooter() {
   const { open } = useExplore()
+  const isBuyer = useSessionRole() === 'customer'
 
   return (
     <footer className="site-footer">
@@ -43,6 +45,9 @@ export function SiteFooter() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link to="/tin-cong-dong">Tin cộng đồng</Link>
+              </li>
             </ul>
           </nav>
           <section aria-labelledby="footer-artisans">
@@ -53,8 +58,8 @@ export function SiteFooter() {
               <li>Nhận phần việc từ đơn hàng lớn do Ban quản lý điều phối</li>
             </ul>
             <p className="site-footer__note">
-              Hồ sơ xưởng do Ban quản lý làng nghề xác minh. Cổng đăng ký chưa
-              mở trong bản demo này.
+              Hội làng nghề xác minh tài khoản hộ gia đình trước khi cấp quyền
+              quản lý xưởng.
             </p>
           </section>
           <section aria-labelledby="footer-contact">
@@ -67,14 +72,16 @@ export function SiteFooter() {
             <p className="site-footer__note">
               Thông tin liên hệ chính thức sẽ được cập nhật.
             </p>
-            <button
-              type="button"
-              className="link-arrow"
-              onClick={() => open({ type: 'quote' })}
-            >
-              Gửi yêu cầu báo giá
-              <ArrowRight size={18} />
-            </button>
+            {isBuyer && (
+              <button
+                type="button"
+                className="link-arrow"
+                onClick={() => open({ type: 'quote' })}
+              >
+                Gửi yêu cầu báo giá
+                <ArrowRight size={18} />
+              </button>
+            )}
           </section>
         </div>
         <div className="site-footer__base">

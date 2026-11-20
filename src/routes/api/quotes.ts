@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { currentAdmin } from '#/server/auth'
+import { currentAccount, currentAdmin } from '#/server/auth'
 import { isSameOrigin, readJson, reply } from '#/server/http'
 import { createQuote, updateQuote } from '#/server/quotes'
 
@@ -8,7 +8,10 @@ export const Route = createFileRoute('/api/quotes')({
     handlers: {
       POST: async ({ request }) => {
         if (!isSameOrigin(request)) return reply({}, 403)
-        const result = await createQuote(await readJson(request))
+        const account = await currentAccount()
+        if (!account) return reply({}, 401)
+        if (account.role !== 'customer') return reply({}, 403)
+        const result = await createQuote(await readJson(request), account.email)
         return result ? reply(result, 201) : reply({}, 400)
       },
       PATCH: async ({ request }) => {

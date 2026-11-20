@@ -31,6 +31,19 @@
   display: grid;
   gap: 1rem;
 }
+.account-panel .account-panel__role-picker {
+  margin-block: 1.5rem 1.25rem;
+}
+.account-panel__role-picker legend {
+  margin-bottom: 0.75rem;
+}
+.account-panel__role-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
 .account-panel .field,
 .admin-editor .field {
   display: grid;
@@ -180,4 +193,177 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+}
+
+.quote-replies {
+  margin-block: 1rem;
+  overflow-wrap: anywhere;
+}
+.quote-replies h3 {
+  font-size: 1rem;
+}
+.quote-replies ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.quote-replies li {
+  border-inline-start: 2px solid var(--line);
+  padding-inline-start: 0.75rem;
+  margin-block: 0.75rem;
+}
+.quote-replies p {
+  margin: 0.3rem 0 0;
+  white-space: pre-wrap;
+}
+
+.account-quotes {
+  margin-block: 1.25rem;
+  padding-block: 0.75rem;
+  border-block: 1px solid var(--line);
+}
+.account-quotes h2 {
+  font-size: 1.1rem;
+}
+.account-quotes .admin-status {
+  display: inline-block;
+  margin: 0;
+}
+.account-quote-code {
+  overflow-wrap: anywhere;
+}
+
+.governance-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-block: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--line);
+}
+.governance-tabs a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: 0.3rem;
+  color: var(--lam-deep);
+  font-weight: 600;
+}
+.governance-tabs a[aria-current='page'] {
+  background: var(--lam-deep);
+  color: var(--paper);
+}
+.governance-tabs span {
+  padding-inline: 0.45rem;
+  border-radius: 2rem;
+  background: var(--paper-deep);
+  color: var(--lam-deep);
+  font-size: 0.8rem;
+}
+.governance-heading {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  margin-bottom: 1rem;
+}
+.governance-heading h2 {
+  width: 100%;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 550;
+  font-size: clamp(1.35rem, 2.5vw, 2rem);
+}
+.governance-heading p {
+  margin: 0;
+  color: var(--ink-soft);
+}
+.governance-heading a,
+.community-news .admin-heading a {
+  color: var(--lam-deep);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.governance-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.7rem;
+}
+.registration-row,
+.community-notice {
+  padding: clamp(0.9rem, 3vw, 1.35rem);
+  background: #fffaf2;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  overflow-wrap: anywhere;
+}
+.registration-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, auto);
+  align-items: center;
+  gap: 0.7rem 1rem;
+}
+.registration-row h3,
+.registration-row p {
+  margin: 0;
+}
+.registration-row h3 {
+  font-size: 1rem;
+}
+.registration-row p {
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}
+.admin-status--rejected {
+  background: #f2e3db;
+  color: #852e20;
+}
+.governance-form fieldset {
+  display: grid;
+  gap: 0.8rem;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.governance-form .field {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+}
+.governance-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.community-news {
+  max-width: 52rem;
+  padding-block: calc(var(--header-h) + 1rem) 4rem;
+}
+.community-notice__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}
+.community-notice h2 {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  margin: 0.35rem 0;
+}
+.community-notice p {
+  margin: 0;
+  white-space: pre-wrap;
+}
+@media (max-width: 44rem) {
+  .registration-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .registration-row form {
+    grid-column: 1 / -1;
+  }
 }

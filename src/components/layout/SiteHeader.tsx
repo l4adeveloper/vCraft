@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import {
   AnimatePresence,
@@ -7,10 +7,12 @@ import {
   useScroll,
 } from 'motion/react'
 import { ArrowRight } from '#/components/ui/Icon'
+import { accountPage } from '#/lib/account'
 import { cx } from '#/lib/format'
 import { useDialogBehavior } from '#/lib/hooks'
 import { DUR, EASE_IN_OUT, EASE_OUT, STAGGER } from '#/lib/motion'
 import { useExplore } from '#/state/explore'
+import { useSessionRole } from '#/state/session'
 
 export const NAV_ITEMS = [
   { label: 'Triển lãm', hash: 'trien-lam' },
@@ -22,22 +24,7 @@ export function SiteHeader() {
   const { open } = useExplore()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [role, setRole] = useState<'admin' | 'customer' | null>(null)
-  useEffect(() => {
-    const controller = new AbortController()
-    fetch('/api/auth', { signal: controller.signal })
-      .then(async (response) => {
-        if (!response.ok) return
-        const session = (await response.json()) as {
-          role: 'admin' | 'customer' | null
-        }
-        setRole(session.role)
-      })
-      .catch(() => {
-        // Keep the public account links when session information is unavailable.
-      })
-    return () => controller.abort()
-  }, [])
+  const role = useSessionRole()
   const header = useRef<HTMLElement>(null)
   const { scrollY } = useScroll()
   useMotionValueEvent(scrollY, 'change', (value) => setScrolled(value > 24))
@@ -75,21 +62,23 @@ export function SiteHeader() {
             </Link>
           ))}
         </nav>
-        <button
-          type="button"
-          className="btn btn--primary btn--small site-header__cta"
-          onClick={requestQuote}
-        >
-          Đặt hàng theo yêu cầu
-        </button>
+        {role === 'customer' && (
+          <button
+            type="button"
+            className="btn btn--primary btn--small site-header__cta"
+            onClick={requestQuote}
+          >
+            Đặt hàng theo yêu cầu
+          </button>
+        )}
         <nav className="site-header__account" aria-label="Tài khoản">
           {role ? (
-            <Link
-              to={role === 'admin' ? '/admin' : '/account'}
-              preload={false}
-              onClick={closeMenu}
-            >
-              {role === 'admin' ? 'Quản trị' : 'Tài khoản'}
+            <Link to={accountPage(role)} preload={false} onClick={closeMenu}>
+              {role === 'artisan'
+                ? 'Xưởng của tôi'
+                : role === 'admin'
+                  ? 'Quản trị'
+                  : 'Tài khoản'}
             </Link>
           ) : (
             <>
@@ -157,14 +146,16 @@ export function SiteHeader() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: DUR.section, delay: 0.55 }}
               >
-                <button
-                  type="button"
-                  className="btn btn--paper"
-                  onClick={requestQuote}
-                >
-                  Đặt hàng theo yêu cầu
-                  <ArrowRight />
-                </button>
+                {role === 'customer' && (
+                  <button
+                    type="button"
+                    className="btn btn--paper"
+                    onClick={requestQuote}
+                  >
+                    Đặt hàng theo yêu cầu
+                    <ArrowRight />
+                  </button>
+                )}
                 <p>Triển lãm số làng gốm Bát Tràng</p>
               </motion.div>
             </nav>
