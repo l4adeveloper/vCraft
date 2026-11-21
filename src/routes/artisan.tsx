@@ -1,6 +1,7 @@
 import { Link, createFileRoute, redirect } from '@tanstack/react-router'
 import { SignOutButton } from '#/components/account/SignOutButton'
 import { QuoteReplies } from '#/components/artisan/QuoteReplies'
+import { ArtisanQuotation } from '#/components/quotation/QuotationCards'
 import {
   ProductForm,
   ProfileForm,
@@ -35,7 +36,10 @@ export const Route = createFileRoute('/artisan')({
 })
 
 function ArtisanWorkspace() {
-  const { account, profile, products, quotes } = Route.useLoaderData()
+  const { account, profile, products, quotes, invitations } =
+    Route.useLoaderData()
+  const activeInvitations = invitations.filter((quote) => !quote.hidden)
+  const hiddenInvitations = invitations.filter((quote) => quote.hidden)
   return (
     <div className="artisan-workspace shell">
       <header className="admin-toolbar">
@@ -73,7 +77,10 @@ function ArtisanWorkspace() {
               Sản phẩm <span>{formatNumber(products.length)}</span>
             </a>
             <a href="#bao-gia">
-              Yêu cầu báo giá <span>{formatNumber(quotes.length)}</span>
+              Yêu cầu báo giá{' '}
+              <span>
+                {formatNumber(quotes.length + activeInvitations.length)}
+              </span>
             </a>
           </nav>
           <div className="artisan-sections">
@@ -143,20 +150,35 @@ function ArtisanWorkspace() {
             >
               <header>
                 <h2 id="quotes-title">Yêu cầu báo giá</h2>
-                <p>
-                  Phản hồi các yêu cầu mua sỉ do Ban quản lý phân bổ cho xưởng.
-                </p>
+                <p>Xem yêu cầu từ khách và gửi chào giá kèm ngày hoàn thành.</p>
               </header>
-              {quotes.length ? (
+              {quotes.length || activeInvitations.length ? (
                 <div className="admin-quotes">
+                  {activeInvitations.map((quote) => (
+                    <ArtisanQuotation key={quote.id} quote={quote} />
+                  ))}
                   {quotes.map((quote) => (
                     <AssignedQuote key={quote.id} quote={quote} />
                   ))}
                 </div>
               ) : (
-                <p className="notice">
-                  Chưa có yêu cầu nào được phân bổ cho xưởng.
-                </p>
+                <p className="notice">Chưa có yêu cầu báo giá mới.</p>
+              )}
+              {hiddenInvitations.length > 0 && (
+                <details className="admin-quote">
+                  <summary>
+                    <span>
+                      <strong>
+                        Yêu cầu đã ẩn ({hiddenInvitations.length})
+                      </strong>
+                    </span>
+                  </summary>
+                  <div className="admin-quote__body admin-quotes">
+                    {hiddenInvitations.map((quote) => (
+                      <ArtisanQuotation key={quote.id} quote={quote} />
+                    ))}
+                  </div>
+                </details>
               )}
             </section>
           </div>

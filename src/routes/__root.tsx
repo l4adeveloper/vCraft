@@ -63,6 +63,9 @@ function RootDocument({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const reduced = useReducedMotion()
+  const buyerAccountPage = useLocation({
+    select: ({ pathname }) => /^\/account\/?$/.test(pathname),
+  })
   const accountPage = useLocation({
     select: ({ pathname }) =>
       /^\/(account|admin|artisan|login|signup)\/?$/.test(pathname),
@@ -79,7 +82,7 @@ function RootComponent() {
             <Outlet />
           </main>
           {!accountPage && <SiteFooter />}
-          {!accountPage && <OverlayHost />}
+          {(!accountPage || buyerAccountPage) && <OverlayHost />}
         </ExploreProvider>
       </SessionRoleProvider>
       <TanStackDevtools

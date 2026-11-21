@@ -16,9 +16,11 @@ import { getProduct } from '#/data'
 import { QUOTE_STATUSES } from '#/data/types'
 import { formatDate, formatNumber } from '#/lib/format'
 import { vietnamCalendarDate } from '#/lib/quote'
+import { QUOTATION_STATES } from '#/lib/quotation'
 import { getAdminDashboard } from '#/server/admin'
 import type { AdminQuote, QuoteStatus } from '#/data/types'
 import type { QuoteReply } from '#/lib/artisan'
+import type { DirectQuote } from '#/lib/quotation'
 import type { FormEvent } from 'react'
 
 const SECTIONS = {
@@ -64,6 +66,7 @@ export const Route = createFileRoute('/admin')({
 type DashboardQuote = AdminQuote & {
   replies: Array<QuoteReply>
   productName: string | null
+  direct: DirectQuote | null
 }
 type DashboardWorkshops = Array<{ id: string; name: string; active: boolean }>
 
@@ -186,7 +189,9 @@ function QuoteDetails({
           </span>
         </span>
         <span className={`admin-status admin-status--${quote.status}`}>
-          {QUOTE_STATUSES[quote.status]}
+          {quote.direct
+            ? QUOTATION_STATES[quote.direct.state]
+            : QUOTE_STATUSES[quote.status]}
         </span>
       </summary>
       <div className="admin-quote__body">
@@ -206,9 +211,11 @@ function QuoteDetails({
             <dd>{quote.budget}</dd>
           </div>
           <div>
-            <dt>Đã phân bổ</dt>
+            <dt>{quote.direct ? 'Nghệ nhân nhận yêu cầu' : 'Đã phân bổ'}</dt>
             <dd>
-              {formatNumber(assigned)} / {formatNumber(quote.quantity)}
+              {quote.direct
+                ? formatNumber(quote.direct.sentCount)
+                : `${formatNumber(assigned)} / ${formatNumber(quote.quantity)}`}
             </dd>
           </div>
           <div>
@@ -241,8 +248,20 @@ function QuoteDetails({
             </div>
           )}
         </dl>
-        <QuoteReplies replies={quote.replies} />
-        <QuoteEditor key={quote.version} quote={quote} workshops={workshops} />
+        {quote.direct ? (
+          <p className="notice">
+            Yêu cầu được gửi trực tiếp đến các nghệ nhân đã duyệt.
+          </p>
+        ) : (
+          <>
+            <QuoteReplies replies={quote.replies} />
+            <QuoteEditor
+              key={quote.version}
+              quote={quote}
+              workshops={workshops}
+            />
+          </>
+        )}
       </div>
     </details>
   )

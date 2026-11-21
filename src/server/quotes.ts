@@ -1,9 +1,15 @@
 import { getProduct, getWorkshop, workshops } from '#/data'
 import { QUOTE_STATUSES } from '#/data/types'
-import { BUDGETS, PRODUCT_TYPES, validate } from '#/lib/quote'
-import { database } from './db'
+import { BUDGETS, isoDate, PRODUCT_TYPES, validate } from '#/lib/quote'
+import { validUnitPrice } from '#/lib/quotation'
+import { database, withTransaction } from './db'
 import { record, UUID_V4 } from './http'
 import type { ArtisanQuote, QuoteReply } from '#/lib/artisan'
+import type {
+  ArtisanInvitation,
+  DirectQuote,
+  QuotationState,
+} from '#/lib/quotation'
 import type {
   AdminQuote,
   QuoteAllocation,
@@ -21,7 +27,23 @@ type QuoteRow = {
   status: QuoteStatus
   allocations: Array<QuoteAllocation>
   version: number
+  flow_state: QuotationState | null
 }
+
+const directQuote = (
+  todayParameter: 2 | 3,
+) => `CASE WHEN q.flow_state IS NOT NULL THEN (
+  SELECT jsonb_build_object(
+    'state', q.flow_state, 'acceptedInvitationId', q.accepted_invitation_id,
+    'sentCount', COUNT(*), 'declinedCount', COUNT(*) FILTER (WHERE i.response = 'declined'),
+    'offers', COALESCE(jsonb_agg(jsonb_build_object(
+      'invitationId', i.id, 'artisanName', i.artisan_name, 'unitPrice', i.unit_price,
+      'completionDate', to_char(i.completion_date, 'YYYY-MM-DD'), 'version', i.version,
+      'available', COALESCE(a.artisan_status = 'approved' AND i.completion_date >= $${todayParameter}::date, FALSE)
+    ) ORDER BY i.unit_price, i.completion_date, i.id) FILTER (WHERE i.response = 'offered'), '[]'::jsonb)
+  )
+  FROM quote_invitations i JOIN accounts a ON a.email = i.artisan_email WHERE i.quote_id = q.id
+) END AS direct`
 
 const REPLY_FIELDS = `w.id AS "workshopId", w.name AS "workshopName",
   r.message, r.unit_price AS "unitPrice", r.quantity`
@@ -78,8 +100,10 @@ export async function createQuote(value: unknown, buyerEmail: string) {
     email,
     phone,
     productId,
+    targetUnitPrice,
   } = value
   if (
+    !validUnitPrice(targetUnitPrice) ||
     typeof id !== 'string' ||
     !UUID_V4.test(id) ||
     typeof productType !== 'string' ||
@@ -99,7 +123,7 @@ export async function createQuote(value: unknown, buyerEmail: string) {
   )
     return null
 
-  const input: QuoteInput = {
+  const input: QuoteInput & { targetUnitPrice: number } = {
     productType,
     quantity,
     deadline,
@@ -109,6 +133,7 @@ export async function createQuote(value: unknown, buyerEmail: string) {
     organization: organization.trim(),
     email: email.trim(),
     phone: phone.trim(),
+    targetUnitPrice,
     productId:
       productId && UUID_V4.test(productId)
         ? productId.toLowerCase()
@@ -148,19 +173,42 @@ export async function createQuote(value: unknown, buyerEmail: string) {
   )
     return null
 
-  const inserted = await db.query<Pick<QuoteRow, 'request'>>(
-    `INSERT INTO quotes (id, request, buyer_email) VALUES ($1, $2, $3)
-     ON CONFLICT (id) DO NOTHING RETURNING request`,
-    [key, input, buyerEmail],
-  )
-  if (inserted.rowCount) return receipt(key, inserted.rows[0].request)
-
-  const concurrent = await db.query<Pick<QuoteRow, 'request'>>(
-    'SELECT request FROM quotes WHERE id = $1 AND buyer_email = $2',
-    [key, buyerEmail],
-  )
-  const retried = concurrent.rows.at(0)
-  return retried ? receipt(key, retried.request) : null
+  return withTransaction(async (client) => {
+    const { rows: artisans } = await client.query<{
+      email: string
+      label: string
+    }>(
+      `SELECT a.email, COALESCE(NULLIF(a.display_name, ''), w.name, 'Nghệ nhân') AS label
+       FROM accounts a LEFT JOIN artisan_workshops w ON w.account_email = a.email
+       WHERE a.role = 'artisan' AND a.artisan_status = 'approved'`,
+    )
+    if (!artisans.length) return 'no-artisans' as const
+    const inserted = await client.query(
+      `INSERT INTO quotes (id, request, buyer_email, flow_state) VALUES ($1, $2, $3, 'sent')
+       ON CONFLICT (id) DO NOTHING`,
+      [key, input, buyerEmail],
+    )
+    if (inserted.rowCount) {
+      await client.query(
+        `INSERT INTO quote_invitations (quote_id, id, artisan_email, artisan_name)
+         SELECT $1, id, email, label
+         FROM unnest($2::uuid[], $3::text[], $4::text[]) AS recipient(id, email, label)`,
+        [
+          key,
+          artisans.map(() => crypto.randomUUID()),
+          artisans.map((artisan) => artisan.email),
+          artisans.map((artisan) => artisan.label),
+        ],
+      )
+      return receipt(key, input)
+    }
+    const concurrent = await client.query<Pick<QuoteRow, 'request'>>(
+      'SELECT request FROM quotes WHERE id = $1 AND buyer_email = $2',
+      [key, buyerEmail],
+    )
+    const retried = concurrent.rows.at(0)
+    return retried ? receipt(key, retried.request) : null
+  })
 }
 
 export async function getQuotes(page: number) {
@@ -172,12 +220,16 @@ export async function getQuotes(page: number) {
   const pages = Math.max(1, Math.ceil(total / PAGE_SIZE))
   const currentPage = Math.max(1, Math.min(page, pages))
   const { rows } = await db.query<
-    QuoteRow & { replies: Array<QuoteReply>; productName: string | null }
+    QuoteRow & {
+      replies: Array<QuoteReply>
+      productName: string | null
+      direct: DirectQuote | null
+    }
   >(
-    `SELECT q.*, ${QUOTE_REPLIES}, p.name AS "productName"
+    `SELECT q.*, ${QUOTE_REPLIES}, ${directQuote(3)}, p.name AS "productName"
      FROM quotes q LEFT JOIN artisan_products p ON p.id::text = q.request->>'productId'
      ORDER BY q.created_at DESC, q.id DESC LIMIT $1 OFFSET $2`,
-    [PAGE_SIZE, (currentPage - 1) * PAGE_SIZE],
+    [PAGE_SIZE, (currentPage - 1) * PAGE_SIZE, isoDate(0)],
   )
   const quotes = rows.map(
     (
@@ -185,6 +237,7 @@ export async function getQuotes(page: number) {
     ): AdminQuote & {
       replies: Array<QuoteReply>
       productName: string | null
+      direct: DirectQuote | null
     } => ({
       ...row.request,
       ...receipt(row.id, row.request),
@@ -194,6 +247,7 @@ export async function getQuotes(page: number) {
       version: row.version,
       replies: row.replies,
       productName: row.productName,
+      direct: row.direct,
     }),
   )
   return { quotes, total, page: currentPage, pages }
@@ -201,17 +255,52 @@ export async function getQuotes(page: number) {
 
 export async function getBuyerQuotes(email: string) {
   const { rows } = await database().query<
-    Pick<QuoteRow, 'id' | 'request' | 'status'> & { replies: Array<QuoteReply> }
+    Pick<QuoteRow, 'id' | 'request' | 'status'> & {
+      replies: Array<QuoteReply>
+      direct: DirectQuote | null
+    }
   >(
-    `SELECT q.id, q.request, q.status, ${QUOTE_REPLIES}
+    `SELECT q.id, q.request, q.status, ${QUOTE_REPLIES}, ${directQuote(2)}
      FROM quotes q WHERE q.buyer_email = $1 ORDER BY q.created_at DESC, q.id DESC`,
-    [email],
+    [email, isoDate(0)],
   )
-  return rows.map(({ id, request, status, replies }) => ({
+  return rows.map(({ id, request, status, replies, direct }) => ({
     ...receipt(id, request),
     status,
     replies,
+    direct,
   }))
+}
+
+export async function getArtisanInvitations(email: string) {
+  const { rows } = await database().query<
+    Omit<
+      ArtisanInvitation,
+      keyof QuoteReceipt | 'customization' | 'targetUnitPrice'
+    > & {
+      id: string
+      request: QuoteInput & { targetUnitPrice: number }
+    }
+  >(
+    `SELECT q.id, q.request, q.flow_state AS state,
+       COALESCE(q.accepted_invitation_id = i.id, FALSE) AS selected,
+       i.response, i.unit_price AS "unitPrice", to_char(i.completion_date, 'YYYY-MM-DD') AS "completionDate",
+       i.hidden, i.version, p.name AS "productName"
+     FROM quote_invitations i JOIN quotes q ON q.id = i.quote_id
+     LEFT JOIN artisan_products p ON p.id::text = q.request->>'productId'
+     WHERE i.artisan_email = $1 ORDER BY q.created_at DESC, q.id DESC`,
+    [email],
+  )
+  return rows.map<ArtisanInvitation>(
+    ({ id, request, productName, ...invitation }) => ({
+      ...receipt(id, request),
+      ...invitation,
+      customization: request.customization,
+      targetUnitPrice: request.targetUnitPrice,
+      productName:
+        productName ?? getProduct(request.productId ?? '')?.name ?? null,
+    }),
+  )
 }
 
 export async function getArtisanQuotes(workshopId: string) {
@@ -280,7 +369,10 @@ export async function updateQuote(value: unknown) {
   const db = database()
   const { rows } = await db.query<
     Pick<QuoteRow, 'request' | 'version' | 'allocations'>
-  >('SELECT request, version, allocations FROM quotes WHERE id = $1', [id])
+  >(
+    'SELECT request, version, allocations FROM quotes WHERE id = $1 AND flow_state IS NULL',
+    [id],
+  )
   const current = rows.at(0)
   if (!current) return 404
   if (current.version !== version) return 409

@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react'
-import type { QuoteInput, QuoteReceipt } from '#/data/types'
+import type { QuoteReceipt } from '#/data/types'
+import type { QuoteSubmission } from '#/lib/quotation'
 
 type LocalReceipt = QuoteReceipt & { status: 'sent' | 'saved-locally' }
 
@@ -61,13 +62,14 @@ export function useQuoteRequests(): Array<LocalReceipt> {
 
 export async function saveQuoteRequest(
   id: string,
-  input: QuoteInput,
-): Promise<QuoteReceipt> {
+  input: QuoteSubmission,
+): Promise<QuoteReceipt | 'no-artisans'> {
   const response = await fetch('/api/quotes', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ...input, id }),
   })
+  if (response.status === 422) return 'no-artisans'
   if (!response.ok) throw new Error('Không gửi được yêu cầu báo giá.')
   const receipt = (await response.json()) as QuoteReceipt
   try {
@@ -80,6 +82,17 @@ export async function saveQuoteRequest(
     // Máy chủ đã nhận được yêu cầu dù trình duyệt không lưu được biên nhận.
   }
   return receipt
+}
+
+export function removeQuoteRequestReceipt(id: string) {
+  try {
+    cache = null
+    const requests = readRequests()
+    const remaining = requests.filter((request) => request.id !== id)
+    if (remaining.length !== requests.length) writeRequests(remaining)
+  } catch {
+    // Yêu cầu đã được xóa trên máy chủ dù trình duyệt không cập nhật được biên nhận.
+  }
 }
 
 export function clearQuoteRequests() {

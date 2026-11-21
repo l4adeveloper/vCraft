@@ -1,10 +1,10 @@
 import { Link, createFileRoute, redirect } from '@tanstack/react-router'
 import { SignOutButton } from '#/components/account/SignOutButton'
-import { QuoteReplies } from '#/components/artisan/QuoteReplies'
-import { QUOTE_STATUSES } from '#/data/types'
+import { BuyerQuotation } from '#/components/quotation/QuotationCards'
 import { accountPage } from '#/lib/account'
-import { formatDate, formatNumber } from '#/lib/format'
 import { getBuyerDashboard } from '#/server/account'
+import { useExplore } from '#/state/explore'
+import { useSessionRole } from '#/state/session'
 
 export const Route = createFileRoute('/account')({
   loader: async () => {
@@ -29,8 +29,10 @@ function Account() {
     account: { displayName, email },
     quotes,
   } = Route.useLoaderData()
+  const { open } = useExplore()
+  const role = useSessionRole()
   return (
-    <div className="account-panel">
+    <div className="account-panel account-panel--buyer">
       <Link to="/home" className="wordmark">
         vCraft
       </Link>
@@ -45,34 +47,21 @@ function Account() {
         className="account-quotes"
         aria-labelledby="account-quotes-heading"
       >
-        <h2 id="account-quotes-heading">Yêu cầu báo giá của tôi</h2>
+        <div className="quotation-card__heading">
+          <h2 id="account-quotes-heading">Yêu cầu báo giá của tôi</h2>
+          <button
+            className="btn btn--primary btn--small"
+            type="button"
+            disabled={role !== 'customer'}
+            onClick={() => open({ type: 'quote' })}
+          >
+            Soạn yêu cầu báo giá
+          </button>
+        </div>
         {quotes.length ? (
           <div className="admin-quotes">
             {quotes.map((quote) => (
-              <details className="admin-quote" key={quote.id}>
-                <summary>
-                  <span>
-                    <strong>
-                      {formatNumber(quote.quantity)} × {quote.productType}
-                    </strong>
-                    <span>Hạn giao {formatDate(quote.deadline)}</span>
-                  </span>
-                </summary>
-                <div className="admin-quote__body">
-                  <p className={`admin-status admin-status--${quote.status}`}>
-                    {QUOTE_STATUSES[quote.status]}
-                  </p>
-                  <p>
-                    Mã yêu cầu{' '}
-                    <strong className="account-quote-code">{quote.code}</strong>
-                  </p>
-                  {quote.replies.length ? (
-                    <QuoteReplies replies={quote.replies} />
-                  ) : (
-                    <p>Chưa có phản hồi từ xưởng.</p>
-                  )}
-                </div>
-              </details>
+              <BuyerQuotation key={quote.id} quote={quote} />
             ))}
           </div>
         ) : (

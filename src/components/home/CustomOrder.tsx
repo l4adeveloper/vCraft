@@ -44,8 +44,8 @@ export function CustomOrder() {
           />
           <Reveal delay={0.1}>
             <p className="lead">
-              Bạn gửi nhu cầu. Ban quản lý làng nghề tiếp nhận, chia phần việc
-              cho những hộ phù hợp và theo dõi tiến độ đến ngày giao.
+              Gửi yêu cầu đến mọi nghệ nhân đã được duyệt, so sánh đơn giá và
+              ngày hoàn thành, rồi theo dõi tiến độ đến khi nhận hàng.
             </p>
           </Reveal>
           <Reveal delay={0.15}>

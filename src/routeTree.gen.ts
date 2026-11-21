@@ -20,6 +20,7 @@ import { Route as TinCongDongRouteImport } from './routes/tin-cong-dong'
 import { Route as ApiAdminRouteImport } from './routes/api/admin'
 import { Route as ApiArtisanRouteImport } from './routes/api/artisan'
 import { Route as ApiAuthRouteImport } from './routes/api/auth'
+import { Route as ApiQuotationRouteImport } from './routes/api/quotation'
 import { Route as ApiQuotesRouteImport } from './routes/api/quotes'
 import { Route as ApiSignupRouteImport } from './routes/api/signup'
 import { Route as HomeIndexRouteImport } from './routes/home/index'
@@ -80,6 +81,11 @@ const ApiAuthRoute = ApiAuthRouteImport.update({
   path: '/api/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiQuotationRoute = ApiQuotationRouteImport.update({
+  id: '/api/quotation',
+  path: '/api/quotation',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiQuotesRoute = ApiQuotesRouteImport.update({
   id: '/api/quotes',
   path: '/api/quotes',
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/api/admin': typeof ApiAdminRoute
   '/api/artisan': typeof ApiArtisanRoute
   '/api/auth': typeof ApiAuthRoute
+  '/api/quotation': typeof ApiQuotationRoute
   '/api/quotes': typeof ApiQuotesRoute
   '/api/signup': typeof ApiSignupRoute
   '/san-pham/$id': typeof SanPhamIdRoute
@@ -130,6 +137,7 @@ export interface FileRoutesByTo {
   '/api/admin': typeof ApiAdminRoute
   '/api/artisan': typeof ApiArtisanRoute
   '/api/auth': typeof ApiAuthRoute
+  '/api/quotation': typeof ApiQuotationRoute
   '/api/quotes': typeof ApiQuotesRoute
   '/api/signup': typeof ApiSignupRoute
   '/san-pham/$id': typeof SanPhamIdRoute
@@ -148,6 +156,7 @@ export interface FileRoutesById {
   '/api/admin': typeof ApiAdminRoute
   '/api/artisan': typeof ApiArtisanRoute
   '/api/auth': typeof ApiAuthRoute
+  '/api/quotation': typeof ApiQuotationRoute
   '/api/quotes': typeof ApiQuotesRoute
   '/api/signup': typeof ApiSignupRoute
   '/san-pham_/$id': typeof SanPhamIdRoute
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/api/admin'
     | '/api/artisan'
     | '/api/auth'
+    | '/api/quotation'
     | '/api/quotes'
     | '/api/signup'
     | '/san-pham/$id'
@@ -184,6 +194,7 @@ export interface FileRouteTypes {
     | '/api/admin'
     | '/api/artisan'
     | '/api/auth'
+    | '/api/quotation'
     | '/api/quotes'
     | '/api/signup'
     | '/san-pham/$id'
@@ -201,6 +212,7 @@ export interface FileRouteTypes {
     | '/api/admin'
     | '/api/artisan'
     | '/api/auth'
+    | '/api/quotation'
     | '/api/quotes'
     | '/api/signup'
     | '/san-pham_/$id'
@@ -219,6 +231,7 @@ export interface RootRouteChildren {
   ApiAdminRoute: typeof ApiAdminRoute
   ApiArtisanRoute: typeof ApiArtisanRoute
   ApiAuthRoute: typeof ApiAuthRoute
+  ApiQuotationRoute: typeof ApiQuotationRoute
   ApiQuotesRoute: typeof ApiQuotesRoute
   ApiSignupRoute: typeof ApiSignupRoute
   SanPhamIdRoute: typeof SanPhamIdRoute
@@ -304,6 +317,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/quotation': {
+      id: '/api/quotation'
+      path: '/api/quotation'
+      fullPath: '/api/quotation'
+      preLoaderRoute: typeof ApiQuotationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/quotes': {
       id: '/api/quotes'
       path: '/api/quotes'
@@ -347,6 +367,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAdminRoute: ApiAdminRoute,
   ApiArtisanRoute: ApiArtisanRoute,
   ApiAuthRoute: ApiAuthRoute,
+  ApiQuotationRoute: ApiQuotationRoute,
   ApiQuotesRoute: ApiQuotesRoute,
   ApiSignupRoute: ApiSignupRoute,
   SanPhamIdRoute: SanPhamIdRoute,

@@ -12,6 +12,7 @@ export const Route = createFileRoute('/api/quotes')({
         if (!account) return reply({}, 401)
         if (account.role !== 'customer') return reply({}, 403)
         const result = await createQuote(await readJson(request), account.email)
+        if (result === 'no-artisans') return reply({ error: result }, 422)
         return result ? reply(result, 201) : reply({}, 400)
       },
       PATCH: async ({ request }) => {

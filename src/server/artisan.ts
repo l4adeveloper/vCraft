@@ -7,7 +7,7 @@ import {
   getWorkshopProfile,
 } from './artisan-store'
 import { currentAccount } from './auth'
-import { getArtisanQuotes } from './quotes'
+import { getArtisanInvitations, getArtisanQuotes } from './quotes'
 
 export const getArtisanDashboard = createServerFn().handler(async () => {
   setResponseHeader('Cache-Control', 'private, no-store')
@@ -20,15 +20,26 @@ export const getArtisanDashboard = createServerFn().handler(async () => {
       profile: null,
       products: [],
       quotes: [],
+      invitations: [],
     }
-  const profile = await getWorkshopProfile(account.email)
+  const [profile, invitations] = await Promise.all([
+    getWorkshopProfile(account.email),
+    getArtisanInvitations(account.email),
+  ])
   const [products, quotes] = profile
     ? await Promise.all([
         getArtisanProducts(profile.id),
         getArtisanQuotes(profile.id),
       ])
     : [[], []]
-  return { role: 'artisan' as const, account, profile, products, quotes }
+  return {
+    role: 'artisan' as const,
+    account,
+    profile,
+    products,
+    quotes,
+    invitations,
+  }
 })
 
 export const listPublishedProducts = createServerFn().handler(

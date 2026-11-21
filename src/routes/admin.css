@@ -367,3 +367,55 @@
     grid-column: 1 / -1;
   }
 }
+
+.account-panel--buyer {
+  width: min(100% - 2 * var(--gutter), 56rem);
+}
+.quotation-card {
+  padding: clamp(0.85rem, 3vw, 1.25rem);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: #fffaf2;
+  overflow-wrap: anywhere;
+}
+.quotation-card__heading,
+.quotation-offers li {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0.55rem 1rem;
+}
+.quotation-card__heading h3,
+.quotation-card__heading p,
+.quotation-offers p {
+  margin: 0;
+}
+.quotation-card__heading h3 {
+  font-size: 1rem;
+}
+.quotation-card__heading p,
+.quotation-card__meta {
+  color: var(--ink-soft);
+  font-size: 0.875rem;
+}
+.quotation-card__notes {
+  white-space: pre-wrap;
+}
+.quotation-offers {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.quotation-offers li,
+.quotation-award {
+  padding: 0.7rem 0.85rem;
+  border-left: 3px solid var(--lam);
+  border-radius: 0.25rem;
+  background: #e9eff2;
+}
+.quotation-form {
+  margin-top: 0.8rem;
+}

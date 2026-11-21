@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link } from '@tanstack/react-router'
+import { Link, useRouter } from '@tanstack/react-router'
+import { MAX_UNIT_PRICE } from '#/lib/artisan'
+import { QUOTATION_STATES, validUnitPrice } from '#/lib/quotation'
 import type { ChangeEvent, FormEvent, ReactNode } from 'react'
 import { ArrowRight, Check } from '#/components/ui/Icon'
 import { getBatch, getProduct, getWorkshop } from '#/data'
@@ -90,6 +92,7 @@ export function QuoteSheet({
   preset,
 }: QuoteSheetProps) {
   const { close } = useExplore()
+  const router = useRouter()
   const product = productId ? getProduct(productId) : undefined
   const workshop = product ? getWorkshop(product.workshopId) : undefined
 
@@ -99,13 +102,19 @@ export function QuoteSheet({
   const [errors, setErrors] = useState<Errors>({})
   const [phase, setPhase] = useState<Phase>('editing')
   const [result, setResult] = useState<QuoteReceipt | null>(null)
+  const [targetPrice, setTargetPrice] = useState(() =>
+    preset === 'example'
+      ? '50000'
+      : (readDraft<{ targetPrice: string }>()?.targetPrice ?? ''),
+  )
+  const [choiceError, setChoiceError] = useState('')
   const submissionId = useRef<string | null>(null)
   const doneHeading = useRef<HTMLHeadingElement>(null)
 
   // Giữ bản nháp để lỡ đóng drawer cũng không mất nội dung đã nhập.
   useEffect(() => {
-    if (phase !== 'done') writeDraft(values)
-  }, [values, phase])
+    if (phase !== 'done') writeDraft({ ...values, targetPrice })
+  }, [values, phase, targetPrice])
 
   useEffect(() => {
     if (phase === 'done') doneHeading.current?.focus()
@@ -113,7 +122,6 @@ export function QuoteSheet({
 
   const errorCount = Object.keys(errors).length
   const sending = phase === 'sending'
-
   const control = (field: Field) => ({
     id: `quote-${field}`,
     name: field,
@@ -139,11 +147,17 @@ export function QuoteSheet({
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (sending) return
+    setChoiceError('')
     const found = validate(values)
     setErrors(found)
     const firstInvalid = FIELD_ORDER.find((field) => found[field])
     if (firstInvalid) {
       document.getElementById(`quote-${firstInvalid}`)?.focus()
+      return
+    }
+    if (!validUnitPrice(Number(targetPrice))) {
+      setChoiceError('Nhập đơn giá đề xuất hợp lệ bằng đồng.')
+      document.getElementById('quote-target-price')?.focus()
       return
     }
     setPhase('sending')
@@ -160,11 +174,18 @@ export function QuoteSheet({
         email: values.email.trim(),
         phone: values.phone.trim(),
         productId,
+        targetUnitPrice: Number(targetPrice),
       })
+      if (saved === 'no-artisans') {
+        setChoiceError('Chưa có nghệ nhân được duyệt để nhận yêu cầu.')
+        setPhase('editing')
+        return
+      }
       submissionId.current = null
       clearDraft()
       setResult(saved)
       setPhase('done')
+      void router.invalidate().catch(() => {})
     } catch {
       setPhase('failed')
     }
@@ -179,6 +200,7 @@ export function QuoteSheet({
       phone: values.phone,
     })
     setErrors({})
+    setTargetPrice('')
     setResult(null)
     setPhase('editing')
   }
@@ -195,7 +217,7 @@ export function QuoteSheet({
           tabIndex={-1}
           ref={doneHeading}
         >
-          Đã ghi nhận yêu cầu
+          Đã gửi yêu cầu đến nghệ nhân
         </h2>
         <p className="sheet__summary">
           Mã yêu cầu <strong className="quote-done__code">{result.code}</strong>
@@ -213,8 +235,7 @@ export function QuoteSheet({
           </div>
         </dl>
         <p className="notice">
-          Ban quản lý làng nghề đã nhận được yêu cầu. Bạn có thể xem phản hồi từ
-          xưởng trong{' '}
+          Bạn có thể xem và chấp nhận chào giá từ xưởng trong{' '}
           <Link to="/account" onClick={close}>
             tài khoản của mình
           </Link>
@@ -222,7 +243,7 @@ export function QuoteSheet({
         </p>
         <div className="quote-done__actions">
           <button type="button" className="btn btn--primary" onClick={close}>
-            Quay lại triển lãm
+            Đóng
           </button>
           <button type="button" className="btn btn--ghost" onClick={startOver}>
             Gửi yêu cầu khác
@@ -239,8 +260,10 @@ export function QuoteSheet({
           Đặt hàng theo yêu cầu
         </h2>
         <p className="sheet__summary">
-          Cho chúng tôi biết bạn cần gì. Ban quản lý làng nghề sẽ chọn những hộ
-          phù hợp và gửi báo giá.
+          Yêu cầu được gửi trực tiếp đến tất cả nghệ nhân đã được duyệt.
+        </p>
+        <p className="field__hint">
+          {QUOTATION_STATES.draft} được lưu trên thiết bị này.
         </p>
       </header>
 
@@ -261,6 +284,11 @@ export function QuoteSheet({
           Chưa gửi được yêu cầu. Nội dung bạn nhập vẫn còn, hãy thử lại.
         </p>
       ) : null}
+      {choiceError && (
+        <p className="form-alert" role="alert">
+          {choiceError}
+        </p>
+      )}
 
       <fieldset className="quote__group" disabled={sending}>
         <legend>Đơn hàng</legend>
@@ -324,6 +352,22 @@ export function QuoteSheet({
             ))}
           </select>
         </FieldRow>
+        <label className="field" htmlFor="quote-target-price">
+          Đơn giá đề xuất (₫/sản phẩm)
+          <input
+            id="quote-target-price"
+            type="number"
+            min={1}
+            max={MAX_UNIT_PRICE}
+            step={1}
+            value={targetPrice}
+            onChange={(event) => {
+              setTargetPrice(event.target.value)
+              setChoiceError('')
+            }}
+            required
+          />
+        </label>
         <FieldRow
           field="customization"
           label="Yêu cầu tùy chỉnh"
@@ -384,7 +428,7 @@ export function QuoteSheet({
         <button
           type="submit"
           className="btn btn--primary btn--block"
-          aria-disabled={sending}
+          disabled={sending}
         >
           {sending ? 'Đang gửi yêu cầu…' : 'Gửi yêu cầu báo giá'}
           {sending ? null : <ArrowRight />}

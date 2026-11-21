@@ -57,7 +57,7 @@ On `/signup`, choose `Khách hàng` (customer) or `Nghệ nhân` (artisan), then
 
 Artisans save their workshop profile in `/artisan`, then publish products with dated production journals in `/san-pham`. Use public HTTPS links for workshop and product photos. Workshop information and certificate details are provided by the artisan.
 
-Signed-in customers can submit quote requests and read workshop replies in `/account`. Registered workshops appear in the admin quote allocation form. Artisans can reply to their assigned requests and optionally include a per-item quote. Admins can see all replies and use the contact details on older requests to reach buyers.
+Signed-in customers can write a quote request from `/account`. An unsent draft stays in the browser. Sending the request delivers it directly to every approved artisan account, including artisans without a workshop profile. An artisan can offer the proposed unit price and completion date, revise them, or decline. Declined requests can be hidden from the artisan's inbox and restored while bidding remains open. The buyer can accept one offer in `/account`, and the selected artisan updates the order to in production and then delivered. The admin allocation editor still handles earlier requests.
 
 ## Admin setup
 
