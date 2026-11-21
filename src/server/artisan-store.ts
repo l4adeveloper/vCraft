@@ -1,4 +1,9 @@
-import { MAX_UNIT_PRICE, PRODUCTION_STAGES } from '#/lib/artisan'
+import {
+  MAX_UNIT_PRICE,
+  MAX_WORKSHOP_PHOTOS,
+  PRODUCTION_STAGES,
+  parseHttpsImageUrl,
+} from '#/lib/artisan'
 import { isoDate, isValidDate } from '#/lib/quote'
 import { database, withTransaction } from './db'
 import { cleanText, record, UUID_V4 } from './http'
@@ -13,19 +18,6 @@ const PROFILE_FIELDS =
   'id, name, history, photo_urls AS "photoUrls", certificates'
 const PRODUCT_FIELDS =
   'id, name, description, price, photo_url AS "photoUrl", journal'
-
-function imageUrl(value: unknown) {
-  const text = cleanText(value, 1, 1024)
-  if (!text || !/^https:\/\//i.test(text) || /[\s\\]/u.test(text)) return null
-  try {
-    const url = new URL(text)
-    return url.protocol === 'https:' && !url.username && !url.password
-      ? text
-      : null
-  } catch {
-    return null
-  }
-}
 
 function unitPrice(value: unknown): value is number {
   return (
@@ -92,10 +84,10 @@ export async function saveWorkshopProfile(email: string, value: unknown) {
     !history ||
     certificates === null ||
     !Array.isArray(value.photoUrls) ||
-    value.photoUrls.length > 4
+    value.photoUrls.length > MAX_WORKSHOP_PHOTOS
   )
     return 400
-  const photos = (value.photoUrls as Array<unknown>).map(imageUrl)
+  const photos = (value.photoUrls as Array<unknown>).map(parseHttpsImageUrl)
   if (photos.some((url) => url === null)) return 400
 
   const result = await database().query(
@@ -115,7 +107,7 @@ export async function saveArtisanProduct(email: string, value: unknown) {
   const { id, price, journal } = value
   const name = cleanText(value.name, 2, 120)
   const description = cleanText(value.description, 1, 1200)
-  const photoUrl = imageUrl(value.photoUrl)
+  const photoUrl = parseHttpsImageUrl(value.photoUrl)
   if (
     typeof id !== 'string' ||
     !UUID_V4.test(id) ||

@@ -8,6 +8,27 @@ export const PRODUCTION_STAGES = [
 ] as const
 
 export const MAX_UNIT_PRICE = 1_000_000_000
+export const MAX_WORKSHOP_PHOTOS = 4
+export const MAX_IMAGE_URL_LENGTH = 1024
+
+export function parseHttpsImageUrl(value: unknown) {
+  if (typeof value !== 'string' || /\0|\p{Surrogate}/u.test(value)) return null
+  const text = value.trim()
+  if (
+    text.length > MAX_IMAGE_URL_LENGTH ||
+    !/^https:\/\//i.test(text) ||
+    /[\s\\]/u.test(text)
+  )
+    return null
+  try {
+    const url = new URL(text)
+    return url.protocol === 'https:' && !url.username && !url.password
+      ? text
+      : null
+  } catch {
+    return null
+  }
+}
 
 export interface WorkshopProfile {
   id: string
